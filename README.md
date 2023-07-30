@@ -3,16 +3,16 @@
 [![Test Status](https://github.com/saturnavt/gohex/actions/workflows/go.yml/badge.svg)](https://github.com/saturnavt/gohex/actions/workflows/go.yml/badge.svg)
 [![GoDoc](https://pkg.go.dev/badge/github.com/saturnavt/gohex?status.svg)](https://pkg.go.dev/github.com/saturnavt/gohex?tab=doc)
 [![Go Report Card](https://goreportcard.com/badge/github.com/saturnavt/gohex)](https://goreportcard.com/report/github.com/saturnavt/gohex)
-## Create project with Hexagonal Architecture folder structure
+## Create project with Hexagonal Architecture folder structure inluding recomendend way with Vertical Slicing
 
 \
-Gohex is a cli tool to create hexagonal architecture app for you including gin-gonic, bcrypt and jwt.
+Gohex is a cli tool to create Hexagonal Architecture + Vertical Slicing app for you including gin-gonic, bcrypt and jwt.
 
-- Creates Hexagonal Architecture project for you.
+- Creates Hexagonal Architecture + Vertical Slicing project for you.
 
 
 ## Features
-- Clean Architecture Folder Structure (https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
+- Hexagonal Architecture + Vertical Slicing Folder Structure (https://en.wikipedia.org/wiki/Hexagonal_architecture_(software))
 - Gin Gonic (https://github.com/gin-gonic/gin)
 - [Swagger](#swagger) (https://github.com/swaggo/gin-swagger)
 - Jwt (https://github.com/dgrijalva/jwt-go)
@@ -48,7 +48,7 @@ In your terminal type to see all avaible commands:
 gohex
 ```
 
-To create a new gin-gonic with clean architecture project(This includes a crud example with the name of Tasks):
+To create a new gin-gonic with Hexagonal Architecture + Vertical Slicing project(This includes a crud example with the name of Tasks):
 
 ```
 [x] New project
