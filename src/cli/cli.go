@@ -261,7 +261,7 @@ func Command() {
 
 			//Create base files data
 			base.BaseData(folderName)
-			bar.Add(1)
+			bar.Add(2)
 			time.Sleep(40 * time.Millisecond)
 
 			if runtime.GOOS == "windows" {
@@ -276,8 +276,9 @@ func Command() {
 				// fmt.Println(string(out))
 
 				//Install swago
-				fmt.Println("")
-				fmt.Println("executing go install github.com/swaggo/swag/cmd/swag@latest")
+				fmt.Println("	")
+				fmt.Println("	executing go install github.com/swaggo/swag/cmd/swag@latest")
+				fmt.Println("	")
 
 				installSwagDependencies := exec.Command("cmd", "/c", "go install github.com/swaggo/swag/cmd/swag@latest")
 

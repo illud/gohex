@@ -556,8 +556,8 @@ var Unauthorized = ErrorJson("Unauthorized", 401)`
 		"testing"
 
 		"github.com/stretchr/testify/assert"
-		router "github.com/` + folderName + `/routing"
-		token "github.com/` + folderName + `/utils/services/jwt"
+		router "` + folderName + `/router"
+		token "` + folderName + `/jswt"
 
 		/*
 			- Uncomment this when you are testing real data coming from database.
@@ -862,8 +862,8 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	router "github.com/` + currentDirName + `/routing"
-	token "github.com/` + currentDirName + `/utils/services/jwt"
+	router "` + currentDirName + `/router"
+	token "` + currentDirName + `/jswt"
 
 	/*
 		- Uncomment this when you are testing real data coming from database.
