@@ -6,7 +6,7 @@ import (
 
 func TestIsUpper(t *testing.T) {
 	expected := true
-	got := IsUpper("gohex")
+	got := IsUpper("Gohex")
 
 	if got != expected {
 		t.Errorf("Expected: %v, got: %v", expected, got)
@@ -14,8 +14,8 @@ func TestIsUpper(t *testing.T) {
 }
 
 func TestStringToHyphen(t *testing.T) {
-	expected := "go-jira"
-	got := StringToHyphen("gohex")
+	expected := "go-hex"
+	got := StringToHyphen("go-hex")
 
 	if got != expected {
 		t.Errorf("Expected: %v, got: %v", expected, got)
