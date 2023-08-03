@@ -1,7 +1,6 @@
 package base
 
 import (
-	"io/ioutil"
 	"log"
 	"os"
 	"os/exec"
@@ -53,7 +52,7 @@ func main() {
 	router.Router().Run(":" + port)
 }`
 	mainBytes := []byte(mainString)
-	ioutil.WriteFile(folderName+"/main.go", mainBytes, 0)
+	os.WriteFile(folderName+"/main.go", mainBytes, 0)
 
 	//Add data to router.go
 	routingString :=
@@ -90,7 +89,7 @@ func Router() *gin.Engine {
 	return router
 }`
 	routingBytes := []byte(routingString)
-	ioutil.WriteFile(folderName+"/router/router.go", routingBytes, 0)
+	os.WriteFile(folderName+"/router/router.go", routingBytes, 0)
 
 	//Add data to .env
 	dotEnvString :=
@@ -99,7 +98,7 @@ func Router() *gin.Engine {
 VERSION = 1.0.0`
 
 	dotEnvBytes := []byte(dotEnvString)
-	ioutil.WriteFile(folderName+"/.env", dotEnvBytes, 0)
+	os.WriteFile(folderName+"/.env", dotEnvBytes, 0)
 
 	//Add data to env.go
 	envString :=
@@ -132,7 +131,7 @@ func Load() Env {
 }`
 
 	envBytes := []byte(envString)
-	ioutil.WriteFile(folderName+"/env/env.go", envBytes, 0)
+	os.WriteFile(folderName+"/env/env.go", envBytes, 0)
 
 	//Add data to task-controller.go
 	taskControllerString :=
@@ -251,7 +250,7 @@ func DeleteTasks(c *gin.Context) {
 	})
 }`
 	taskControllerBytes := []byte(taskControllerString)
-	ioutil.WriteFile(folderName+"/app/tasks/aplication/tasks.controller.go", taskControllerBytes, 0)
+	os.WriteFile(folderName+"/app/tasks/aplication/tasks.controller.go", taskControllerBytes, 0)
 
 	//Add data to models/task.model.go
 	taskModelString :=
@@ -266,7 +265,7 @@ type Task struct {
 	Description string
 }`
 	taskModelBytes := []byte(taskModelString)
-	ioutil.WriteFile(folderName+"/app/tasks/domain/models/tasks.model.go", taskModelBytes, 0)
+	os.WriteFile(folderName+"/app/tasks/domain/models/tasks.model.go", taskModelBytes, 0)
 
 	//Add data to repositories/tasks.repository.go
 	taskRepositoryString :=
@@ -284,7 +283,7 @@ type ITasks interface {
 	DeleteTasks(taskId string) string
 }`
 	taskRepositoryBytes := []byte(taskRepositoryString)
-	ioutil.WriteFile(folderName+"/app/tasks/domain/repositories/tasks.repository.go", taskRepositoryBytes, 0)
+	os.WriteFile(folderName+"/app/tasks/domain/repositories/tasks.repository.go", taskRepositoryBytes, 0)
 
 	//Add data to task.service.go
 	taskServiceString :=
@@ -325,7 +324,7 @@ func (s *Service) DeleteTasks(taskId string) string {
 	return s.tasksRepository.DeleteTasks(taskId)
 }`
 	taskServiceBytes := []byte(taskServiceString)
-	ioutil.WriteFile(folderName+"/app/tasks/domain/services/tasks.service.go", taskServiceBytes, 0)
+	os.WriteFile(folderName+"/app/tasks/domain/services/tasks.service.go", taskServiceBytes, 0)
 
 	//Add data to tasks.db.go
 	taskInfraestructureString :=
@@ -368,7 +367,7 @@ func (t *TasksDb) DeleteTasks(taskId string) string {
 	return "tasks deleted"
 }`
 	taskInfraestructureBytes := []byte(taskInfraestructureString)
-	ioutil.WriteFile(folderName+"/app/tasks/infraestructure/tasks.db.go", taskInfraestructureBytes, 0)
+	os.WriteFile(folderName+"/app/tasks/infraestructure/tasks.db.go", taskInfraestructureBytes, 0)
 
 	//Add data to data/db.go
 	taskDataString := `package data
@@ -407,7 +406,7 @@ func Client() *gorm.DB {
 }`
 
 	taskDataBytes := []byte(taskDataString)
-	ioutil.WriteFile(folderName+"/data/db.go", taskDataBytes, 0)
+	os.WriteFile(folderName+"/data/db.go", taskDataBytes, 0)
 
 	//Add data to helpers/bcrypt.go
 	bcrypt := `package bcrypt
@@ -429,7 +428,7 @@ func CheckPasswordHash(password, hash string) bool {
 }`
 
 	bcryptBytes := []byte(bcrypt)
-	ioutil.WriteFile(folderName+"/bcrypt/bcrypt.go", bcryptBytes, 0)
+	os.WriteFile(folderName+"/bcrypt/bcrypt.go", bcryptBytes, 0)
 
 	// ASYNC to helpers
 	asyncString :=
@@ -471,7 +470,7 @@ func Exec(f func() interface{}) Future {
 }`
 	//Add data to async.go
 	asyncBytes := []byte(asyncString)
-	ioutil.WriteFile(folderName+"/helpers/async.go", asyncBytes, 0)
+	os.WriteFile(folderName+"/helpers/async.go", asyncBytes, 0)
 
 	// jswt
 	jwtString :=
@@ -514,7 +513,7 @@ func ValidateToken(validate string) string {
 }`
 	//Add data to jswt.go
 	jwtBytes := []byte(jwtString)
-	ioutil.WriteFile(folderName+"/jswt/jswt.go", jwtBytes, 0)
+	os.WriteFile(folderName+"/jswt/jswt.go", jwtBytes, 0)
 
 	// ERRORS
 	errorsString :=
@@ -541,7 +540,7 @@ var Unauthorized = ErrorJson("Unauthorized", 401)`
 
 	//Add data to errors.go
 	errorsBytes := []byte(errorsString)
-	ioutil.WriteFile(folderName+"/helpers/errors.go", errorsBytes, 0)
+	os.WriteFile(folderName+"/helpers/errors.go", errorsBytes, 0)
 
 	// getTasks_test.go
 	tasksTestString :=
@@ -592,9 +591,9 @@ var Unauthorized = ErrorJson("Unauthorized", 401)`
 		assert.Contains(t, w.Result().Status, expectedStatus, "🔴 Expected %v 🔴 got %v", expectedStatus, w.Result().Status)
 		fmt.Println("🟢")
 	}`
-	//Add data to jwt.go
+
 	tasksTestBytes := []byte(tasksTestString)
-	ioutil.WriteFile(folderName+"/test/tasks/getTasks_test.go", tasksTestBytes, 0)
+	os.WriteFile(folderName+"/e2e/tasks/getTasks_test.go", tasksTestBytes, 0)
 }
 
 func BaseModuleCrud(moduleName string, moduleNameSnakeCase string) {
@@ -732,7 +731,7 @@ func Delete` + strings.Title(moduleName) + `(c *gin.Context) {
 	})
 }`
 	controllerBytes := []byte(controllerString)
-	ioutil.WriteFile("app/"+moduleName+"/aplication/"+moduleNameSnakeCase+".controller.go", controllerBytes, 0)
+	os.WriteFile("app/"+moduleName+"/aplication/"+moduleNameSnakeCase+".controller.go", controllerBytes, 0)
 
 	//Add data to moduleName.modle.go
 	modelString :=
@@ -742,7 +741,7 @@ type ` + strings.Title(moduleName) + ` struct {
 	Id    int
 }`
 	modelsBytes := []byte(modelString)
-	ioutil.WriteFile("app/"+moduleName+"/domain/models/"+moduleNameSnakeCase+".model.go", modelsBytes, 0)
+	os.WriteFile("app/"+moduleName+"/domain/models/"+moduleNameSnakeCase+".model.go", modelsBytes, 0)
 
 	//Add data to usecase.go
 	servicesString :=
@@ -783,7 +782,7 @@ func (s *Service) Delete` + strings.Title(moduleName) + `(` + moduleName + `Id i
 	return s.` + moduleName + `Repository.Delete` + strings.Title(moduleName) + `(` + moduleName + `Id)
 }`
 	servicesBytes := []byte(servicesString)
-	ioutil.WriteFile("app/"+moduleName+"/domain/services/"+moduleNameSnakeCase+".service.go", servicesBytes, 0)
+	os.WriteFile("app/"+moduleName+"/domain/services/"+moduleNameSnakeCase+".service.go", servicesBytes, 0)
 
 	//Add data to module/infraestructure/module.db.go
 	repositoryInterfaceString :=
@@ -801,7 +800,7 @@ type I` + strings.Title(moduleName) + ` interface {
 	Delete` + strings.Title(moduleName) + `(` + moduleName + `Id int64) string
 }`
 	repositoryInterfaceBytes := []byte(repositoryInterfaceString)
-	ioutil.WriteFile("app/"+moduleName+"/domain/repositories/"+moduleNameSnakeCase+".repository.go", repositoryInterfaceBytes, 0)
+	os.WriteFile("app/"+moduleName+"/domain/repositories/"+moduleNameSnakeCase+".repository.go", repositoryInterfaceBytes, 0)
 
 	//Add data to module/infraestructure/module.db.go
 	infraestructureString :=
@@ -847,7 +846,7 @@ func  (` + str.GetFirstCharacterOfString(moduleName) + ` *` + strings.Title(modu
 	return "` + strings.Title(moduleName) + ` deleted"
 }`
 	infraestructureBytes := []byte(infraestructureString)
-	ioutil.WriteFile("app/"+moduleName+"/infraestructure/"+moduleNameSnakeCase+".db.go", infraestructureBytes, 0)
+	os.WriteFile("app/"+moduleName+"/infraestructure/"+moduleNameSnakeCase+".db.go", infraestructureBytes, 0)
 
 	// TEST
 	testString :=
@@ -898,9 +897,9 @@ func TestGet` + strings.Title(moduleName) + `(t *testing.T) {
 	assert.Contains(t, w.Result().Status, expectedStatus, "🔴 Expected %v 🔴 got %v", expectedStatus, w.Result().Status)
 	fmt.Println("🟢")
 }`
-	//Add data to test
+	//Add data to e2e
 	testBytes := []byte(testString)
-	ioutil.WriteFile("test/"+moduleName+"/get_"+moduleNameSnakeCase+"_test.go", testBytes, 0)
+	os.WriteFile("e2e/"+moduleName+"/get_"+moduleNameSnakeCase+"_test.go", testBytes, 0)
 }
 
 func BaseDbClient(clientName string) {
@@ -1064,12 +1063,12 @@ func Client() *gorm.DB {
 	// }`
 
 	// 		prismaSChemaBytes := []byte(prismaString)
-	// 		ioutil.WriteFile("schema.prisma", prismaSChemaBytes, 0)
+	// 		os.WriteFile("schema.prisma", prismaSChemaBytes, 0)
 	// 	}
 
 	//Add data to db.go
 	clientBytes := []byte(clientString)
-	ioutil.WriteFile("data/db.go", clientBytes, 0)
+	os.WriteFile("data/db.go", clientBytes, 0)
 }
 
 // ADD controller to router.go crud
@@ -1088,7 +1087,7 @@ func AppendToRoutingCrud(moduleName string) {
 
 	currentDirName := ss[len(ss)-1]
 
-	input, err := ioutil.ReadFile("router/router.go")
+	input, err := os.ReadFile("router/router.go")
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -1115,7 +1114,7 @@ func AppendToRoutingCrud(moduleName string) {
 	}
 
 	output := strings.Join(lines, "\n")
-	err = ioutil.WriteFile("router/router.go", []byte(output), 0644)
+	err = os.WriteFile("router/router.go", []byte(output), 0644)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -1158,7 +1157,7 @@ func AppendToRoutingSimple(moduleName string) {
 
 	currentDirName := ss[len(ss)-1]
 
-	input, err := ioutil.ReadFile("routing/routing.go")
+	input, err := os.ReadFile("routing/routing.go")
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -1181,7 +1180,7 @@ func AppendToRoutingSimple(moduleName string) {
 	}
 
 	output := strings.Join(lines, "\n")
-	err = ioutil.WriteFile("routing/routing.go", []byte(output), 0644)
+	err = os.WriteFile("routing/routing.go", []byte(output), 0644)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -1224,7 +1223,7 @@ func AppendDbConnectionToMain() {
 
 	currentDirName := ss[len(ss)-1]
 
-	input, err := ioutil.ReadFile("main.go")
+	input, err := os.ReadFile("main.go")
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -1247,7 +1246,7 @@ func AppendDbConnectionToMain() {
 	}
 
 	output := strings.Join(lines, "\n")
-	err = ioutil.WriteFile("main.go", []byte(output), 0644)
+	err = os.WriteFile("main.go", []byte(output), 0644)
 	if err != nil {
 		log.Fatalln(err)
 	}

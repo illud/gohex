@@ -2,7 +2,6 @@ package cli
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -245,17 +244,17 @@ func Command() {
 			bar.Add(1)
 			time.Sleep(40 * time.Millisecond)
 
-			//TEST FOLDER
-			os.MkdirAll(folderName+"/test", os.ModePerm)
+			//E2E TEST FOLDER
+			os.MkdirAll(folderName+"/e2e", os.ModePerm)
 			bar.Add(1)
 			time.Sleep(40 * time.Millisecond)
 
-			//TEST TASKS FOLDER
-			os.MkdirAll(folderName+"/test/tasks", os.ModePerm)
+			//E2E TEST TASKS FOLDER
+			os.MkdirAll(folderName+"/e2e/tasks", os.ModePerm)
 			bar.Add(1)
 			time.Sleep(40 * time.Millisecond)
 
-			os.Create(folderName + "/test/tasks/gettasks_test.go")
+			os.Create(folderName + "/e2e/tasks/gettasks_test.go")
 			bar.Add(1)
 			time.Sleep(40 * time.Millisecond)
 
@@ -458,12 +457,12 @@ func Command() {
 			bar.Add(1)
 			time.Sleep(40 * time.Millisecond)
 
-			//TEST FOLDER
-			os.MkdirAll("test/"+moduleName, os.ModePerm)
+			//E2E TEST FOLDER
+			os.MkdirAll("e2e/"+moduleName, os.ModePerm)
 			bar.Add(1)
 			time.Sleep(40 * time.Millisecond)
 
-			os.Create("test/" + moduleName + "/get_" + moduleNameSnakeCase + "_test.go")
+			os.Create("e2e/" + moduleName + "/get_" + moduleNameSnakeCase + "_test.go")
 			bar.Add(1)
 			time.Sleep(40 * time.Millisecond)
 
@@ -610,7 +609,7 @@ func Command() {
 
 		if m.choice == "Documentation" {
 			path, _ := filepath.Abs("README.md")
-			source, err := ioutil.ReadFile(path)
+			source, err := os.ReadFile(path)
 			if err != nil {
 				panic(err)
 			}

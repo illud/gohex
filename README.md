@@ -24,7 +24,7 @@ Gohex is a cli tool to create Hexagonal Architecture + Vertical Slicing app for 
   - Mysql
   - Gorm
 - Example tasks api
-- [Testing](#testing)  (Auto generate test example when creating a new modules)
+- [Testing](#testing)  (Auto generate e2e test example when creating a new modules)
 
 ## Installation
 
@@ -242,7 +242,7 @@ Folder Structure:
 ├───router
 │       router.go
 │
-└───test
+└───e2e
     └───tasks
             gettasks_test.go
 ```
