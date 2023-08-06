@@ -16,7 +16,7 @@ import (
 	"github.com/schollz/progressbar/v3"
 )
 
-var choices = []string{"New project", "Module", "DB service"}
+var choices = []string{"New Project", "Module", "DB Service"}
 
 type model struct {
 	cursor int
@@ -59,14 +59,14 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 func (m model) View() string {
 	s := strings.Builder{}
 	s.WriteString("Choose a option\n\n")
-	s.WriteString("up/down: to select\n\n")
+	s.WriteString("⇡/⇣ to select\n\n")
 	s.WriteString("please use snake_case when the module name consist of two or more words\n\n")
 
 	for i := 0; i < len(choices); i++ {
 		if m.cursor == i {
-			s.WriteString("[x] ")
+			s.WriteString("▶  ")
 		} else {
-			s.WriteString("[ ] ")
+			s.WriteString("  ")
 		}
 		s.WriteString(choices[i])
 		s.WriteString("\n")
@@ -91,7 +91,7 @@ func Command() {
 	if m, ok := m.(model); ok && m.choice != "" {
 		// fmt.Printf("\n---\nYou chose %s!\n", m.choice)
 
-		if m.choice == "New project" {
+		if m.choice == "New Project" {
 
 			fmt.Printf("\n")
 			fmt.Println("Enter Project Name: ")
@@ -507,7 +507,7 @@ func Command() {
 			time.Sleep(40 * time.Millisecond)
 		}
 
-		if m.choice == "DB service" {
+		if m.choice == "DB Service" {
 			fmt.Printf("\n")
 			fmt.Println("Enter DB(mysql, gorm) Name: ")
 			flagName := input.Input()
