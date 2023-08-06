@@ -51,9 +51,9 @@ gohex
 To create a new gin-gonic with Hexagonal Architecture + Vertical Slicing project(This includes a crud example with the name of Tasks):
 
 ```
-[x] New project
-[ ] Module
-[ ] DB service
+▶  New Project
+  Module
+  DB Service
 
 Enter Project Name: yourprojectname
 ```
@@ -63,9 +63,9 @@ Enter Project Name: yourprojectname
 To create a new module with crud flow:
 please use snake_case when the module name consist of two or more words
 ```
-[ ] New project
-[x] Module
-[ ] DB service
+  New Project
+▶  Module
+  DB Service
 
 Enter Module Name: your_module_name
 ```
@@ -74,9 +74,9 @@ Enter Module Name: your_module_name
 To create a new db service client with Mysql, Gorm or Prisma:
 
 ```
-[ ] New project
-[ ] Module
-[x] DB service
+  New Project
+  Module
+▶  DB Service
 ```
 
 Mysql - to learn more visit (https://github.com/go-sql-driver/mysql)
