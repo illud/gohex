@@ -125,6 +125,11 @@ func Command() {
 			bar.Add(1)
 			time.Sleep(40 * time.Millisecond)
 
+			//.gitignore
+			os.Create(folderName + "/.gitignore")
+			bar.Add(1)
+			time.Sleep(40 * time.Millisecond)
+
 			//Env
 			os.MkdirAll(folderName+"/env", os.ModePerm)
 			bar.Add(1)
