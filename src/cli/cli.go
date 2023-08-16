@@ -130,6 +130,11 @@ func Command() {
 			bar.Add(1)
 			time.Sleep(40 * time.Millisecond)
 
+			//README
+			os.Create(folderName + "/README")
+			bar.Add(1)
+			time.Sleep(40 * time.Millisecond)
+
 			//Env
 			os.MkdirAll(folderName+"/env", os.ModePerm)
 			bar.Add(1)
@@ -292,6 +297,19 @@ func Command() {
 					os.Stderr.WriteString(err.Error())
 				}
 
+				//Install fresh
+				fmt.Println("	")
+				fmt.Println("	executing go install github.com/pilu/fresh@latest")
+				fmt.Println("	")
+
+				installFreshDependencies := exec.Command("cmd", "/c", "go install github.com/pilu/fresh@latest")
+
+				//INSTALL DEPENDENCIES
+				_, err = installFreshDependencies.Output()
+				if err != nil {
+					os.Stderr.WriteString(err.Error())
+				}
+
 				installDependencies := exec.Command("cmd", "/c", "go get -d ./...")
 				installDependencies.Dir = folderName
 
@@ -343,6 +361,19 @@ func Command() {
 
 				//INSTALL DEPENDENCIES
 				_, err = installSwagDependencies.Output()
+				if err != nil {
+					os.Stderr.WriteString(err.Error())
+				}
+
+				//Install fresh
+				fmt.Println("	")
+				fmt.Println("	executing go install github.com/pilu/fresh@latest")
+				fmt.Println("	")
+
+				installFreshDependencies := exec.Command("sh", "/c", "go install github.com/pilu/fresh@latest")
+
+				//INSTALL DEPENDENCIES
+				_, err = installFreshDependencies.Output()
 				if err != nil {
 					os.Stderr.WriteString(err.Error())
 				}

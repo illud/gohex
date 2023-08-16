@@ -134,6 +134,82 @@ tmp/`
 	gitignoreBytes := []byte(gitignoreString)
 	os.WriteFile(folderName+"/.gitignore", gitignoreBytes, 0)
 
+	//Add data to README
+	readmeString :=
+		`
+		_____       _               
+	   |  __ \     | |              
+	   | |  \/ ___ | |__   _____  __
+	   | | __ / _ \| '_ \ / _ \ \/ /
+	   | |_\ \ (_) | | | |  __/>  < 
+		\____/\___/|_| |_|\___/_/\_\
+   
+[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
+[circleci-url]: https://circleci.com/gh/nestjs/nest
+
+<p align="center">A progressive <a href="http://golang.dev" target="_blank">Go</a> framework for building efficient and scalable server-side applications.</p>
+<p align="center">
+
+[![Test Status](https://github.com/saturnavt/gohex/actions/workflows/go.yml/badge.svg)](https://github.com/saturnavt/gohex/actions/workflows/go.yml/badge.svg)
+[![GoDoc](https://pkg.go.dev/badge/github.com/saturnavt/gohex?status.svg)](https://pkg.go.dev/github.com/saturnavt/gohex?tab=doc)
+[![Go Report Card](https://goreportcard.com/badge/github.com/saturnavt/gohex)](https://goreportcard.com/report/github.com/saturnavt/gohex)
+
+</p>
+<!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
+[![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+
+## Description
+
+[Gohex](https://github.com/saturnavt/gohex) CLI tool to create Hexagonal Architecture + Vertical Slicing.
+
+## Running the app
+
+` + "```" + `bash
+# development
+$ go run main.go
+
+# watch mode
+# for more go to https://github.com/gravityblast/fresh
+$ fresh
+
+# production mode
+$ go build main.go
+` + "```" + `
+
+## Test
+
+` + "```" + `bash
+# tests
+$ go test -v ./...
+
+# to get coverage
+$ go test -v -cover --coverprofile=coverage.out  -coverpkg=./... ./...
+
+# to view test coverage on your browser
+$ go tool cover -html=coverage.out
+
+# prints formatted test output, and a summary of the test run
+# for more go to https://github.com/gotestyourself/gotestsum
+$ go run gotest.tools/gotestsum@latest --format testname
+` + "```" + `
+
+## Support
+
+Gohex is an MIT-licensed open source project.
+
+## Stay in touch
+
+- Author - [Illud](https://github.com/illud)
+
+## License
+
+Nest is [MIT licensed](LICENSE).
+"# Gohex" 
+`
+
+	readmeBytes := []byte(readmeString)
+	os.WriteFile(folderName+"/README", readmeBytes, 0)
+
 	//Add data to env.go
 	envString :=
 		`package env
@@ -580,51 +656,73 @@ var Unauthorized = ErrorJson("Unauthorized", 401)`
 	tasksTestString :=
 		`package tasks_test
 
-	import (
-		"bytes"
-		"encoding/json"
-		"fmt"
-		"net/http"
-		"net/http/httptest"
-		"testing"
+import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"net/http"
+	"net/http/httptest"
+	"testing"
 
-		"github.com/stretchr/testify/assert"
-		router "` + folderName + `/router"
-		token "` + folderName + `/jswt"
+	"github.com/stretchr/testify/assert"
+	router "` + folderName + `/router"
+	token "` + folderName + `/jswt"
 
-		/*
-			- Uncomment this when you are testing real data coming from database.
-			db "github.com/` + folderName + `/infraestructure/databases"
-		*/
-	)
+	/*
+		- Uncomment this when you are testing real data coming from database.
+		db "github.com/` + folderName + `/infraestructure/databases"
+	*/
+)
 
-	func TestGetTasks(t *testing.T) {
-		tokenData := token.GenerateToken("test") //Your token data
+// Setup and Teardown
+func setup(t *testing.T) func(t *testing.T) {
+	// Setup
+	t.Log("setup sub test")
 
-		/*
-			- Uncomment this when you are testing real data coming from database.
-		    db.Connect()
-		*/
+	// For test db
+	t.Setenv("ENV", "TEST")
 
-		router := router.Router()
+	/*
+		- Uncomment this when you are testing real data coming from test database.
+		db.Connect()
+	*/
 
-		w := httptest.NewRecorder()
+	// Teardown
+	return func(t *testing.T) {
+		t.Log("teardown sub test")
+	}
+}
 
-		values := map[string]interface{}{"token": tokenData} // this is the body in case you make a post, put
-		jsonValue, _ := json.Marshal(values)
+func TestGetTasks(t *testing.T) {
+	// Call Setup/Teardown
+	teardown := setup(t)
+	defer teardown(t)
 
-		req, _ := http.NewRequest("GET", "/tasks", bytes.NewBuffer(jsonValue))
-		req.Header.Set("Content-Type", "application/json")
-		req.Header.Set("Authorization", tokenData)
-		router.ServeHTTP(w, req)
+	tokenData := token.GenerateToken("test") //Your token data
 
-		expected := ` + "`" + `{"data":null}` + "`" + ` // Your expected data inside backquote
-		expectedStatus := "200 OK"
+	router := router.Router()
 
-		assert.Contains(t, w.Body.String(), expected, "🔴 Expected %v 🔴 got %v", expected, w.Body.String())
-		assert.Contains(t, w.Result().Status, expectedStatus, "🔴 Expected %v 🔴 got %v", expectedStatus, w.Result().Status)
-		fmt.Println("🟢")
-	}`
+	w := httptest.NewRecorder()
+
+	values := map[string]interface{}{"token": tokenData} // this is the body in case you make a post, put
+	jsonValue, _ := json.Marshal(values)
+
+	req, _ := http.NewRequest("GET", "/tasks", bytes.NewBuffer(jsonValue))
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", tokenData)
+
+	// In case you use cookies like for example token
+	req.Header.Set("Cookie", "token="+tokenData+";")
+
+	router.ServeHTTP(w, req)
+
+	expected := ` + "`" + `{"data":[{"ID":0,"CreatedAt":"0001-01-01T00:00:00Z","UpdatedAt":"0001-01-01T00:00:00Z","DeletedAt":null,"Id":1,"Title":"Hello","Description":"World"}]}` + "`" + ` // Your expected data inside backquote
+	expectedStatus := "200 OK"
+
+	assert.Contains(t, w.Body.String(), expected, "🔴 Expected %v 🔴 got %v", expected, w.Body.String())
+	assert.Contains(t, w.Result().Status, expectedStatus, "🔴 Expected %v 🔴 got %v", expectedStatus, w.Result().Status)
+	fmt.Println("🟢")
+}`
 
 	tasksTestBytes := []byte(tasksTestString)
 	os.WriteFile(folderName+"/e2e/tasks/getTasks_test.go", tasksTestBytes, 0)
@@ -904,13 +1002,31 @@ import (
 	*/
 )
 
-func TestGet` + strings.Title(moduleName) + `(t *testing.T) {
-	tokenData := token.GenerateToken("test") //Your token data
+// Setup and Teardown
+func setup(t *testing.T) func(t *testing.T) {
+	// Setup
+	t.Log("setup sub test")
+
+	// For test db
+	t.Setenv("ENV", "TEST")
 
 	/*
-		- Uncomment this when you are testing real data coming from database.
-	    db.Connect()
+		- Uncomment this when you are testing real data coming from test database.
+		db.Connect()
 	*/
+
+	// Teardown
+	return func(t *testing.T) {
+		t.Log("teardown sub test")
+	}
+}
+
+func TestGet` + strings.Title(moduleName) + `(t *testing.T) {
+	// Call Setup/Teardown
+	teardown := setup(t)
+	defer teardown(t)
+
+	tokenData := token.GenerateToken("test") //Your token data
 
 	router := router.Router()
 
@@ -922,9 +1038,13 @@ func TestGet` + strings.Title(moduleName) + `(t *testing.T) {
 	req, _ := http.NewRequest("GET", "/` + regex.StringToHyphen(moduleName) + `", bytes.NewBuffer(jsonValue))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", tokenData)
+
+	// In case you use cookies like for example token
+	req.Header.Set("Cookie", "token="+tokenData+";")
+
 	router.ServeHTTP(w, req) 
 
-	expected := ` + "`" + `{"data":null}` + "`" + ` // Your expected data inside backquote 
+	expected := ` + "`" + `{"data":[{"Id":1}]}` + "`" + ` // Your expected data inside backquote 
 	expectedStatus := "200 OK"
 
 	assert.Contains(t, w.Body.String(), expected, "🔴 Expected %v 🔴 got %v", expected, w.Body.String())

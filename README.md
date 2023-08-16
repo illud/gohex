@@ -196,6 +196,8 @@ Folder Structure:
 
 ```
 │   .env
+│   .gitignore
+│   README
 │   go.mod
 │   go.sum
 │   main.go
