@@ -1,8 +1,8 @@
 # Gohex
 
-[![Test Status](https://github.com/saturnavt/gohex/actions/workflows/go.yml/badge.svg)](https://github.com/saturnavt/gohex/actions/workflows/go.yml/badge.svg)
-[![GoDoc](https://pkg.go.dev/badge/github.com/saturnavt/gohex?status.svg)](https://pkg.go.dev/github.com/saturnavt/gohex?tab=doc)
-[![Go Report Card](https://goreportcard.com/badge/github.com/saturnavt/gohex)](https://goreportcard.com/report/github.com/saturnavt/gohex)
+[![Test Status](https://github.com/illud/gohex/actions/workflows/go.yml/badge.svg)](https://github.com/illud/gohex/actions/workflows/go.yml/badge.svg)
+[![GoDoc](https://pkg.go.dev/badge/github.com/illud/gohex?status.svg)](https://pkg.go.dev/github.com/illud/gohex?tab=doc)
+[![Go Report Card](https://goreportcard.com/badge/github.com/illud/gohex)](https://goreportcard.com/report/github.com/illud/gohex)
 ## Create project with Hexagonal Architecture folder structure inluding recomendend way with Vertical Slicing
 
 \
@@ -33,12 +33,12 @@ Gohex requires [Go](https://golang.org/) v1.17+ to run.
 Install the dependencies.
 
 ```sh
-go get github.com/saturnavt/gohex
+go get github.com/illud/gohex
 ```
 Or
 
 ```sh
-go install github.com/saturnavt/gohex@latest
+go install github.com/illud/gohex@latest
 ```
 ## How to use
 

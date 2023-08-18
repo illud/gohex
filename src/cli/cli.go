@@ -11,8 +11,8 @@ import (
 
 	markdown "github.com/MichaelMure/go-term-markdown"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/saturnavt/gohex/src/base"
-	input "github.com/saturnavt/gohex/src/cli/input"
+	"github.com/illud/gohex/src/base"
+	input "github.com/illud/gohex/src/cli/input"
 	"github.com/schollz/progressbar/v3"
 )
 

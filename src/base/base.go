@@ -7,8 +7,8 @@ import (
 	"runtime"
 	"strings"
 
-	regex "github.com/saturnavt/gohex/src/utils/regex"
-	str "github.com/saturnavt/gohex/src/utils/strings"
+	regex "github.com/illud/gohex/src/utils/regex"
+	str "github.com/illud/gohex/src/utils/strings"
 )
 
 func BaseData(folderName string) {
@@ -150,9 +150,9 @@ tmp/`
 <p align="center">A progressive <a href="http://golang.dev" target="_blank">Go</a> framework for building efficient and scalable server-side applications.</p>
 <p align="center">
 
-[![Test Status](https://github.com/saturnavt/gohex/actions/workflows/go.yml/badge.svg)](https://github.com/saturnavt/gohex/actions/workflows/go.yml/badge.svg)
-[![GoDoc](https://pkg.go.dev/badge/github.com/saturnavt/gohex?status.svg)](https://pkg.go.dev/github.com/saturnavt/gohex?tab=doc)
-[![Go Report Card](https://goreportcard.com/badge/github.com/saturnavt/gohex)](https://goreportcard.com/report/github.com/saturnavt/gohex)
+[![Test Status](https://github.com/illud/gohex/actions/workflows/go.yml/badge.svg)](https://github.com/illud/gohex/actions/workflows/go.yml/badge.svg)
+[![GoDoc](https://pkg.go.dev/badge/github.com/illud/gohex?status.svg)](https://pkg.go.dev/github.com/illud/gohex?tab=doc)
+[![Go Report Card](https://goreportcard.com/badge/github.com/illud/gohex)](https://goreportcard.com/report/github.com/illud/gohex)
 
 </p>
 <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
@@ -160,7 +160,7 @@ tmp/`
 
 ## Description
 
-[Gohex](https://github.com/saturnavt/gohex) CLI tool to create Hexagonal Architecture + Vertical Slicing.
+[Gohex](https://github.com/illud/gohex) CLI tool to create Hexagonal Architecture + Vertical Slicing.
 
 ## Running the app
 

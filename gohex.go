@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	cmd "github.com/saturnavt/gohex/src/cli"
+	cmd "github.com/illud/gohex/src/cli"
 )
 
 func main() {

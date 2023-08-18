@@ -1,4 +1,4 @@
-module github.com/saturnavt/gohex
+module github.com/illud/gohex
 
 go 1.20
 
