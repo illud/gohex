@@ -101,7 +101,7 @@ func Command() {
 
 			fmt.Printf("\n")
 			//Project
-			bar := progressbar.Default(35)
+			bar := progressbar.Default(41)
 
 			os.MkdirAll(folderName, os.ModePerm)
 			bar.Add(1)
@@ -270,7 +270,7 @@ func Command() {
 
 			//Create base files data
 			base.BaseData(folderName)
-			bar.Add(2)
+			bar.Add(1)
 			time.Sleep(40 * time.Millisecond)
 
 			if runtime.GOOS == "windows" {
@@ -285,9 +285,10 @@ func Command() {
 				// fmt.Println(string(out))
 
 				//Install swago
-				fmt.Println("	")
-				fmt.Println("	executing go install github.com/swaggo/swag/cmd/swag@latest")
-				fmt.Println("	")
+				// fmt.Println("	")
+				// fmt.Println("executing go install github.com/swaggo/swag/cmd/swag@latest")
+				bar.Add(1)
+				time.Sleep(40 * time.Millisecond)
 
 				installSwagDependencies := exec.Command("cmd", "/c", "go install github.com/swaggo/swag/cmd/swag@latest")
 
@@ -298,14 +299,31 @@ func Command() {
 				}
 
 				//Install fresh
-				fmt.Println("	")
-				fmt.Println("	executing go install github.com/pilu/fresh@latest")
-				fmt.Println("	")
+				// fmt.Println("	")
+				// fmt.Println("executing go install github.com/pilu/fresh@latest")
+				// fmt.Println("	")
+				bar.Add(1)
+				time.Sleep(40 * time.Millisecond)
 
 				installFreshDependencies := exec.Command("cmd", "/c", "go install github.com/pilu/fresh@latest")
 
 				//INSTALL DEPENDENCIES
 				_, err = installFreshDependencies.Output()
+				if err != nil {
+					os.Stderr.WriteString(err.Error())
+				}
+
+				//Install gotestsum
+				// fmt.Println("	")
+				// fmt.Println("executing go install gotest.tools/gotestsum@latest")
+				// fmt.Println("	")
+				bar.Add(1)
+				time.Sleep(40 * time.Millisecond)
+
+				installGotestsumDependencies := exec.Command("cmd", "/c", "go install gotest.tools/gotestsum@latest")
+
+				//INSTALL gotestsum DEPENDENCIES
+				_, err = installGotestsumDependencies.Output()
 				if err != nil {
 					os.Stderr.WriteString(err.Error())
 				}
@@ -354,8 +372,10 @@ func Command() {
 				// fmt.Println(string(out))
 
 				//Install swago
-				fmt.Println("")
-				fmt.Println("executing go install github.com/swaggo/swag/cmd/swag@latest")
+				// fmt.Println("")
+				// fmt.Println("executing go install github.com/swaggo/swag/cmd/swag@latest")
+				bar.Add(1)
+				time.Sleep(40 * time.Millisecond)
 
 				installSwagDependencies := exec.Command("sh", "/c", "go install github.com/swaggo/swag/cmd/swag@latest")
 
@@ -366,14 +386,31 @@ func Command() {
 				}
 
 				//Install fresh
-				fmt.Println("	")
-				fmt.Println("	executing go install github.com/pilu/fresh@latest")
-				fmt.Println("	")
+				// fmt.Println("	")
+				// fmt.Println("executing go install github.com/pilu/fresh@latest")
+				// fmt.Println("	")
+				bar.Add(1)
+				time.Sleep(40 * time.Millisecond)
 
 				installFreshDependencies := exec.Command("sh", "/c", "go install github.com/pilu/fresh@latest")
 
 				//INSTALL DEPENDENCIES
 				_, err = installFreshDependencies.Output()
+				if err != nil {
+					os.Stderr.WriteString(err.Error())
+				}
+
+				//Install gotestsum
+				// fmt.Println("	")
+				// fmt.Println("executing go install gotest.tools/gotestsum@latest")
+				// fmt.Println("	")
+				bar.Add(1)
+				time.Sleep(40 * time.Millisecond)
+
+				installgotestsumDependencies := exec.Command("sh", "/c", "go install gotest.tools/gotestsum@latest")
+
+				//INSTALL gotestsum DEPENDENCIES
+				_, err = installgotestsumDependencies.Output()
 				if err != nil {
 					os.Stderr.WriteString(err.Error())
 				}
@@ -409,7 +446,7 @@ func Command() {
 				// fmt.Println(string(installTestDependenciesOut))
 			}
 
-			bar.Add(1)
+			bar.Add(3)
 			time.Sleep(40 * time.Millisecond)
 
 			fmt.Println("")

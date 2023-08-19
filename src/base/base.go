@@ -190,7 +190,7 @@ $ go tool cover -html=coverage.out
 
 # prints formatted test output, and a summary of the test run
 # for more go to https://github.com/gotestyourself/gotestsum
-$ go run gotest.tools/gotestsum@latest --format testname
+$ gotestsum --format testname
 ` + "```" + `
 
 ## Support
