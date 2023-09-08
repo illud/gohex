@@ -3,7 +3,7 @@
 [![Test Status](https://github.com/illud/gohex/actions/workflows/go.yml/badge.svg)](https://github.com/illud/gohex/actions/workflows/go.yml/badge.svg)
 [![GoDoc](https://pkg.go.dev/badge/github.com/illud/gohex?status.svg)](https://pkg.go.dev/github.com/illud/gohex?tab=doc)
 [![Go Report Card](https://goreportcard.com/badge/github.com/illud/gohex)](https://goreportcard.com/report/github.com/illud/gohex)
-## Create project with Hexagonal Architecture folder structure inluding recomendend way with Vertical Slicing
+## Create project with Hexagonal Architecture folder structure inluding recommended way with Vertical Slicing
 
 \
 Gohex is a cli tool to create Hexagonal Architecture + Vertical Slicing app for you including gin-gonic, bcrypt and jwt.
