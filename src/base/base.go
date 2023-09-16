@@ -20,7 +20,7 @@ import (
 	"fmt"
 	"strconv"
 	//Uncomment next line when you want to connect to a database
-	//db "` + folderName + `/data"
+	//db "` + folderName + `/adapters/database"
 	env "` + folderName + `/env"
 	router "` + folderName + `/router"
 )
@@ -443,7 +443,7 @@ func (s *Service) DeleteTasks(taskId string) string {
 import (
 	tasksModel "` + folderName + `/app/tasks/domain/models"
 	// uncomment this a change _ for db when your are making database queries
-	_ "` + folderName + `/data"
+	_ "` + folderName + `/adapters/database"
 )
 
 type TasksDb struct {
@@ -516,9 +516,9 @@ func Client() *gorm.DB {
 }`
 
 	taskDataBytes := []byte(taskDataString)
-	os.WriteFile(folderName+"/data/db.go", taskDataBytes, 0)
+	os.WriteFile(folderName+"/adapters/database/db.go", taskDataBytes, 0)
 
-	//Add data to helpers/bcrypt.go
+	//Add data to adapters/bcrypt/bcrypt.go
 	bcrypt := `package bcrypt
 
 import (
@@ -538,7 +538,7 @@ func CheckPasswordHash(password, hash string) bool {
 }`
 
 	bcryptBytes := []byte(bcrypt)
-	os.WriteFile(folderName+"/bcrypt/bcrypt.go", bcryptBytes, 0)
+	os.WriteFile(folderName+"/adapters/bcrypt/bcrypt.go", bcryptBytes, 0)
 
 	// ASYNC to helpers
 	asyncString :=
@@ -582,9 +582,9 @@ func Exec(f func() interface{}) Future {
 	asyncBytes := []byte(asyncString)
 	os.WriteFile(folderName+"/helpers/async.go", asyncBytes, 0)
 
-	// jswt
+	// jwt
 	jwtString :=
-		`package jswt
+		`package jwt
 
 import (
 	"fmt"
@@ -621,9 +621,9 @@ func ValidateToken(validate string) string {
 
 	return tokenCheker
 }`
-	//Add data to jswt.go
+	//Add data to jwt.go
 	jwtBytes := []byte(jwtString)
-	os.WriteFile(folderName+"/jswt/jswt.go", jwtBytes, 0)
+	os.WriteFile(folderName+"/adapters/jwt/jwt.go", jwtBytes, 0)
 
 	// ERRORS
 	errorsString :=
@@ -666,11 +666,11 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	router "` + folderName + `/router"
-	token "` + folderName + `/jswt"
+	token "` + folderName + `/adapters/jwt"
 
 	/*
 		- Uncomment this when you are testing real data coming from database.
-		db "github.com/` + folderName + `/infraestructure/databases"
+		db "github.com/app/` + folderName + `/infraestructure"
 	*/
 )
 
@@ -941,7 +941,7 @@ type I` + strings.Title(moduleName) + ` interface {
 import (
 	` + moduleName + `Model "` + currentDirName + `/app/` + moduleName + `/domain/models"
 	// uncomment this a change _ for db when your are making database queries
-	_ "` + currentDirName + `/data"
+	_ "` + currentDirName + `/adapters/database"
 )
 
 type ` + strings.Title(moduleName) + `Db struct {
@@ -994,11 +994,11 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	router "` + currentDirName + `/router"
-	token "` + currentDirName + `/jswt"
+	token "` + currentDirName + `/adapters/jwt"
 
 	/*
 		- Uncomment this when you are testing real data coming from database.
-		db "github.com/` + currentDirName + `/infraestructure/databases"
+		db "github.com/app/` + currentDirName + `/infraestructure"
 	*/
 )
 
@@ -1061,7 +1061,7 @@ func BaseDbClient(clientName string) {
 	clientString := ""
 	if clientName == "mysql" {
 		clientString =
-			`package data
+			`package database
 
 import (
 	"database/sql"
@@ -1098,7 +1098,7 @@ func Client() *sql.DB {
 
 	if clientName == "gorm" {
 		clientString =
-			`package data
+			`package database
 		
 import (
 	"fmt"
@@ -1222,7 +1222,7 @@ func Client() *gorm.DB {
 
 	//Add data to db.go
 	clientBytes := []byte(clientString)
-	os.WriteFile("data/db.go", clientBytes, 0)
+	os.WriteFile("/adapters/database/db.go", clientBytes, 0)
 }
 
 // ADD controller to router.go crud
@@ -1387,7 +1387,7 @@ func AppendDbConnectionToMain() {
 	for i, line := range lines {
 		if strings.Contains(line, "import (") || strings.Contains(line, "import(") {
 			lines[i] = `import (
-	db "` + currentDirName + `/data"`
+	db "` + currentDirName + `/adapters/database"`
 		}
 
 		if strings.Contains(line, "router.Router().Run") {

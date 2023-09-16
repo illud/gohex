@@ -197,10 +197,20 @@ Folder Structure:
 ```
 │   .env
 │   .gitignore
-│   README
 │   go.mod
 │   go.sum
 │   main.go
+│   README
+│
+├───adapters
+│   ├───bcrypt
+│   │       bcrypt.go
+│   │
+│   ├───database
+│   │       db.go
+│   │
+│   └───jwt
+│           jwt.go
 │
 ├───app
 │   └───tasks
@@ -220,16 +230,14 @@ Folder Structure:
 │       └───infraestructure
 │               tasks.db.go
 │
-├───bcrypt
-│       bcrypt.go
-│
-├───data
-│       db.go
-│
 ├───docs
 │       docs.go
 │       swagger.json
 │       swagger.yaml
+│
+├───e2e
+│   └───tasks
+│           gettasks_test.go
 │
 ├───env
 │       env.go
@@ -238,15 +246,8 @@ Folder Structure:
 │       async.go
 │       errors.go
 │
-├───jswt
-│       jswt.go
-│
-├───router
-│       router.go
-│
-└───e2e
-    └───tasks
-            gettasks_test.go
+└───router
+        router.go
 ```
 
 ## License

@@ -101,7 +101,7 @@ func Command() {
 
 			fmt.Printf("\n")
 			//Project
-			bar := progressbar.Default(41)
+			bar := progressbar.Default(39)
 
 			os.MkdirAll(folderName, os.ModePerm)
 			bar.Add(1)
@@ -209,13 +209,38 @@ func Command() {
 			bar.Add(1)
 			time.Sleep(40 * time.Millisecond)
 
-			//Data
-			os.MkdirAll(folderName+"/data", os.ModePerm)
+			//adapters
+			os.MkdirAll(folderName+"/adapters", os.ModePerm)
 			bar.Add(1)
 			time.Sleep(40 * time.Millisecond)
 
-			//data/db
-			os.Create(folderName + "/data/db.go")
+			//DataBase
+			os.MkdirAll(folderName+"/adapters/database", os.ModePerm)
+			bar.Add(1)
+			time.Sleep(40 * time.Millisecond)
+
+			//adapters/database/db
+			os.Create(folderName + "/adapters/database/db.go")
+			bar.Add(1)
+			time.Sleep(40 * time.Millisecond)
+
+			//jwt
+			os.MkdirAll(folderName+"/adapters/jwt", os.ModePerm)
+			bar.Add(1)
+			time.Sleep(40 * time.Millisecond)
+
+			//adapters/jwt/jwt.go
+			os.Create(folderName + "/adapters/jwt/jwt.go")
+			bar.Add(1)
+			time.Sleep(40 * time.Millisecond)
+
+			//bcrypt
+			os.MkdirAll(folderName+"/adapters/bcrypt", os.ModePerm)
+			bar.Add(1)
+			time.Sleep(40 * time.Millisecond)
+
+			//adapters/bcrypt/bcrypt.go
+			os.Create(folderName + "/adapters/bcrypt/bcrypt.go")
 			bar.Add(1)
 			time.Sleep(40 * time.Millisecond)
 
@@ -231,26 +256,6 @@ func Command() {
 
 			//helpers/errors.go
 			os.Create(folderName + "/helpers/errors.go")
-			bar.Add(1)
-			time.Sleep(40 * time.Millisecond)
-
-			//jswt
-			os.MkdirAll(folderName+"/jswt", os.ModePerm)
-			bar.Add(1)
-			time.Sleep(40 * time.Millisecond)
-
-			//jswt/jswt.go
-			os.Create(folderName + "/jswt/jswt.go")
-			bar.Add(1)
-			time.Sleep(40 * time.Millisecond)
-
-			//bcrypt
-			os.MkdirAll(folderName+"/bcrypt", os.ModePerm)
-			bar.Add(1)
-			time.Sleep(40 * time.Millisecond)
-
-			//bcrypt/bcrypt.go
-			os.Create(folderName + "/bcrypt/bcrypt.go")
 			bar.Add(1)
 			time.Sleep(40 * time.Millisecond)
 
