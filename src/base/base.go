@@ -1361,7 +1361,7 @@ func Client() *gorm.DB {
 
 	//Add data to db.go
 	clientBytes := []byte(clientString)
-	os.WriteFile("/adapters/database/db.go", clientBytes, 0)
+	os.WriteFile("adapters/database/db.go", clientBytes, 0)
 }
 
 // ADD controller to router.go crud
