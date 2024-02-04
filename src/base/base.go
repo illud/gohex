@@ -389,10 +389,7 @@ func DeleteTasks(c *gin.Context) {
 	taskModelString :=
 		`package models
 
-import "gorm.io/gorm"
-
 type Task struct {
-	gorm.Model
 	Id          int
 	Title       string
 	Description string
@@ -818,7 +815,7 @@ func BaseModuleCrud(moduleName string, moduleNameSnakeCase string) {
 
 import (
 	"strconv"
-
+	"net/http"
 	"github.com/gin-gonic/gin"
 	` + moduleName + `Services "` + currentDirName + `/app/` + moduleName + `/domain/services"
 	` + moduleName + `Database "` + currentDirName + `/app/` + moduleName + `/infraestructure"
@@ -845,10 +842,19 @@ var service = ` + moduleName + `Services.NewService(` + moduleName + `Db)
 // @Router /` + regex.StringToHyphen(moduleName) + ` [Post]
 func Create` + strings.Title(moduleName) + `(c *gin.Context) {
 	var ` + moduleName + ` ` + moduleName + `Model.` + strings.Title(moduleName) + `
-	c.ShouldBindJSON(&` + moduleName + `)
+	if err := c.ShouldBindJSON(&` + moduleName + `); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
-	c.JSON(200, gin.H{
-		"data": service.Create` + strings.Title(moduleName) + `(),
+	result, err := service.Create` + strings.Title(moduleName) + `()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"data": result,
 	})
 }
 
@@ -863,8 +869,14 @@ func Create` + strings.Title(moduleName) + `(c *gin.Context) {
 // @Success 200
 // @Router /` + regex.StringToHyphen(moduleName) + ` [Get]
 func Get` + strings.Title(moduleName) + `(c *gin.Context) {
-	c.JSON(200, gin.H{
-		"data": service.Get` + strings.Title(moduleName) + `(),
+	result, err := service.Get` + strings.Title(moduleName) + `()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"data": result,
 	})
 }
 
@@ -874,17 +886,26 @@ func Get` + strings.Title(moduleName) + `(c *gin.Context) {
 // @Description Get ` + strings.Title(moduleName) + `
 // @Tags ` + strings.Title(moduleName) + `
 // @Security BearerAuth
-// @Param ` + moduleName + `Id path int64 true "` + strings.Title(moduleName) + `Id"
+// @Param ` + moduleName + `Id path int true "` + strings.Title(moduleName) + `Id"
 // @Accept json
 // @Produce json
 // @Success 200
 // @Router /` + regex.StringToHyphen(moduleName) + `/{` + moduleName + `Id} [Get]
 func GetOne` + strings.Title(moduleName) + `(c *gin.Context) {
-	` + moduleName + `Id := c.Param("` + moduleName + `Id")
-	` + moduleName + `IdToInt64, _ := strconv.ParseInt(` + moduleName + `Id, 10, 64)
+	` + moduleName + `Id, err := strconv.Atoi(c.Param("` + moduleName + `Id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
-	c.JSON(200, gin.H{
-		"data": service.GetOne` + strings.Title(moduleName) + `(` + moduleName + `IdToInt64),
+	result, err := service.GetOne` + strings.Title(moduleName) + `(` + moduleName + `Id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"data": result,
 	})
 }
 
@@ -894,7 +915,7 @@ func GetOne` + strings.Title(moduleName) + `(c *gin.Context) {
 // @Description Put ` + strings.Title(moduleName) + `
 // @Tags ` + strings.Title(moduleName) + `
 // @Security BearerAuth
-// @Param ` + moduleName + `Id path int64 true "` + strings.Title(moduleName) + `Id"
+// @Param ` + moduleName + `Id path int true "` + strings.Title(moduleName) + `Id"
 // @Accept json
 // @Produce json
 // @Param Body body ` + moduleName + `Model.` + strings.Title(moduleName) + ` true "Body to update ` + strings.Title(moduleName) + `"
@@ -902,12 +923,25 @@ func GetOne` + strings.Title(moduleName) + `(c *gin.Context) {
 // @Router /` + regex.StringToHyphen(moduleName) + `/{` + moduleName + `Id} [Put]
 func Update` + strings.Title(moduleName) + `(c *gin.Context) {
 	var ` + moduleName + ` ` + moduleName + `Model.` + strings.Title(moduleName) + `
-	c.ShouldBindJSON(&` + moduleName + `)
-	` + moduleName + `Id := c.Param("` + moduleName + `Id")
-	` + moduleName + `IdToInt, _ := strconv.ParseInt(` + moduleName + `Id, 10, 64)
+	if err := c.ShouldBindJSON(&` + moduleName + `); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
-	c.JSON(200, gin.H{
-		"data": service.Update` + strings.Title(moduleName) + `(` + moduleName + `IdToInt),
+	` + moduleName + `Id, err := strconv.Atoi(c.Param("` + moduleName + `Id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	result, err := service.Update` + strings.Title(moduleName) + `(` + moduleName + `Id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"data": result,
 	})
 }
 
@@ -917,19 +951,29 @@ func Update` + strings.Title(moduleName) + `(c *gin.Context) {
 // @Description Delete ` + strings.Title(moduleName) + `
 // @Tags ` + strings.Title(moduleName) + `
 // @Security BearerAuth
-// @Param ` + moduleName + `Id path int64 true "` + strings.Title(moduleName) + `Id"
+// @Param ` + moduleName + `Id path int true "` + strings.Title(moduleName) + `Id"
 // @Accept json
 // @Produce json
 // @Success 200
 // @Router /` + regex.StringToHyphen(moduleName) + `/{` + moduleName + `Id} [Delete]
 func Delete` + strings.Title(moduleName) + `(c *gin.Context) {
-	` + moduleName + `Id := c.Param("` + moduleName + `Id")
-	` + moduleName + `IdToInt, _ := strconv.ParseInt(` + moduleName + `Id, 10, 64)
+	` + moduleName + `Id, err := strconv.Atoi(c.Param("` + moduleName + `Id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
-	c.JSON(200, gin.H{
-		"data": service.Delete` + strings.Title(moduleName) + `(` + moduleName + `IdToInt),
+	result, err := service.Delete` + strings.Title(moduleName) + `(` + moduleName + `Id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"data": result,
 	})
-}`
+}
+`
 	controllerBytes := []byte(controllerString)
 	os.WriteFile("app/"+moduleName+"/aplication/"+moduleNameSnakeCase+".controller.go", controllerBytes, 0)
 
@@ -962,24 +1006,44 @@ func NewService(` + moduleName + `Repository ` + moduleName + `Interface.I` + st
 	}
 }
 
-func (s *Service) Create` + strings.Title(moduleName) + `() string {
-	return s.` + moduleName + `Repository.Create` + strings.Title(moduleName) + `()
+func (s *Service) Create` + strings.Title(moduleName) + `() (*string, error) {
+	result, err := s.` + moduleName + `Repository.Create` + strings.Title(moduleName) + `()
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
 }
 
-func (s *Service) Get` + strings.Title(moduleName) + `() []*` + moduleName + `Model.` + strings.Title(moduleName) + ` {
-	return s.` + moduleName + `Repository.Get` + strings.Title(moduleName) + `()
+func (s *Service) Get` + strings.Title(moduleName) + `() ([]*` + moduleName + `Model.` + strings.Title(moduleName) + `, error) {
+	result, err := s.` + moduleName + `Repository.Get` + strings.Title(moduleName) + `()
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
 }
 
-func (s *Service) GetOne` + strings.Title(moduleName) + `(` + moduleName + `Id int64) interface{} {
-	return s.` + moduleName + `Repository.GetOne` + strings.Title(moduleName) + `(` + moduleName + `Id)
+func (s *Service) GetOne` + strings.Title(moduleName) + `(` + moduleName + `Id int) (*` + moduleName + `Model.` + strings.Title(moduleName) + `, error) {
+	result, err := s.` + moduleName + `Repository.GetOne` + strings.Title(moduleName) + `(` + moduleName + `Id)
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
 }
 
-func (s *Service) Update` + strings.Title(moduleName) + `(` + moduleName + `Id int64) string {
-	return s.` + moduleName + `Repository.Update` + strings.Title(moduleName) + `(` + moduleName + `Id)
+func (s *Service) Update` + strings.Title(moduleName) + `(` + moduleName + `Id int) (*string, error) {
+	result, err := s.` + moduleName + `Repository.Update` + strings.Title(moduleName) + `(` + moduleName + `Id)
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
 }
 
-func (s *Service) Delete` + strings.Title(moduleName) + `(` + moduleName + `Id int64) string {
-	return s.` + moduleName + `Repository.Delete` + strings.Title(moduleName) + `(` + moduleName + `Id)
+func (s *Service) Delete` + strings.Title(moduleName) + `(` + moduleName + `Id int) (*string, error) {
+	result, err := s.` + moduleName + `Repository.Delete` + strings.Title(moduleName) + `(` + moduleName + `Id)
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
 }`
 	servicesBytes := []byte(servicesString)
 	os.WriteFile("app/"+moduleName+"/domain/services/"+moduleNameSnakeCase+".service.go", servicesBytes, 0)
@@ -993,11 +1057,11 @@ import (
 )
 
 type I` + strings.Title(moduleName) + ` interface {
-	Create` + strings.Title(moduleName) + `() string
-	Get` + strings.Title(moduleName) + `() []*` + moduleName + `Model.` + strings.Title(moduleName) + `
-	GetOne` + strings.Title(moduleName) + `(` + moduleName + `Id int64) interface{}
-	Update` + strings.Title(moduleName) + `(` + moduleName + `Id int64) string
-	Delete` + strings.Title(moduleName) + `(` + moduleName + `Id int64) string
+	Create` + strings.Title(moduleName) + `() (*string, error)
+	Get` + strings.Title(moduleName) + `() ([]*` + moduleName + `Model.` + strings.Title(moduleName) + `, error)
+	GetOne` + strings.Title(moduleName) + `(` + moduleName + `Id int) (*` + moduleName + `Model.` + strings.Title(moduleName) + `, error)
+	Update` + strings.Title(moduleName) + `(` + moduleName + `Id int) (*string, error)
+	Delete` + strings.Title(moduleName) + `(` + moduleName + `Id int) (*string, error)
 }`
 	repositoryInterfaceBytes := []byte(repositoryInterfaceString)
 	os.WriteFile("app/"+moduleName+"/domain/repositories/"+moduleNameSnakeCase+".repository.go", repositoryInterfaceBytes, 0)
@@ -1008,42 +1072,49 @@ type I` + strings.Title(moduleName) + ` interface {
 
 import (
 	` + moduleName + `Model "` + currentDirName + `/app/` + moduleName + `/domain/models"
-	// uncomment this a change _ for db when your are making database queries
+	// uncomment this a change _ for db when you are making database queries
 	_ "` + currentDirName + `/adapters/database"
 )
 
 type ` + strings.Title(moduleName) + `Db struct {
-	// Add any dependencies or configurations related to the UserRepository here, if needed.
+	// Add any dependencies or configurations related to the UserRepository here if needed.
 }
 
 func New` + strings.Title(moduleName) + `Db() *` + strings.Title(moduleName) + `Db {
-	// Initialize any dependencies and configurations for the ` + strings.Title(moduleName) + `Repository here, if needed.
+	// Initialize any dependencies and configurations for the ` + strings.Title(moduleName) + `Repository here if needed.
 	return &` + strings.Title(moduleName) + `Db{}
 }
 
 var ` + moduleName + ` []` + moduleName + `Model.` + strings.Title(moduleName) + `
 
-
-func (` + str.GetFirstCharacterOfString(moduleName) + ` *` + strings.Title(moduleName) + `Db) Create` + strings.Title(moduleName) + `() string {
-	return "` + strings.Title(moduleName) + ` created"
+func (` + str.GetFirstCharacterOfString(moduleName) + ` *` + strings.Title(moduleName) + `Db) Create` + strings.Title(moduleName) + `() (*string, error) {
+	// Implement your creation logic here
+	var result = "` + strings.Title(moduleName) + ` created"
+	return &result, nil
 }
 
-func (` + str.GetFirstCharacterOfString(moduleName) + ` *` + strings.Title(moduleName) + `Db) Get` + strings.Title(moduleName) + `() []*` + moduleName + `Model.` + strings.Title(moduleName) + ` {
+func (` + str.GetFirstCharacterOfString(moduleName) + ` *` + strings.Title(moduleName) + `Db) Get` + strings.Title(moduleName) + `() ([]*` + moduleName + `Model.` + strings.Title(moduleName) + `, error) {
+	// Implement your retrieval logic here
 	var ` + moduleName + ` []*` + moduleName + `Model.` + strings.Title(moduleName) + `
 	` + moduleName + ` = append(` + moduleName + `, &` + moduleName + `Model.` + strings.Title(moduleName) + `{Id: 1})
-	return ` + moduleName + `
+	return ` + moduleName + `, nil
 }
 
-func (` + str.GetFirstCharacterOfString(moduleName) + ` *` + strings.Title(moduleName) + `Db) GetOne` + strings.Title(moduleName) + `(` + moduleName + `Id int64) interface{} {
-	return ` + moduleName + `Id
+func (` + str.GetFirstCharacterOfString(moduleName) + ` *` + strings.Title(moduleName) + `Db) GetOne` + strings.Title(moduleName) + `(` + moduleName + `Id int) (*` + moduleName + `Model.` + strings.Title(moduleName) + `, error) {
+	// Implement your single retrieval logic here
+	return &` + moduleName + `Model.` + strings.Title(moduleName) + `{Id: ` + moduleName + `Id}, nil
 }
 
-func (` + str.GetFirstCharacterOfString(moduleName) + ` *` + strings.Title(moduleName) + `Db) Update` + strings.Title(moduleName) + `(` + moduleName + `Id int64) string {
-	return "` + strings.Title(moduleName) + ` updated"
+func (` + str.GetFirstCharacterOfString(moduleName) + ` *` + strings.Title(moduleName) + `Db) Update` + strings.Title(moduleName) + `(` + moduleName + `Id int) (*string, error) {
+	// Implement your update logic here
+	var result = "` + strings.Title(moduleName) + ` updated"
+	return &result, nil
 }
 
-func  (` + str.GetFirstCharacterOfString(moduleName) + ` *` + strings.Title(moduleName) + `Db) Delete` + strings.Title(moduleName) + `(` + moduleName + `Id int64) string {
-	return "` + strings.Title(moduleName) + ` deleted"
+func (` + str.GetFirstCharacterOfString(moduleName) + ` *` + strings.Title(moduleName) + `Db) Delete` + strings.Title(moduleName) + `(` + moduleName + `Id int) (*string, error) {
+	// Implement your deletion logic here
+	var result = "` + strings.Title(moduleName) + ` deleted"
+	return &result, nil
 }`
 	infraestructureBytes := []byte(infraestructureString)
 	os.WriteFile("app/"+moduleName+"/infraestructure/"+moduleNameSnakeCase+".db.go", infraestructureBytes, 0)
