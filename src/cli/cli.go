@@ -12,11 +12,12 @@ import (
 	markdown "github.com/MichaelMure/go-term-markdown"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/illud/gohex/src/base"
+	endpointCli "github.com/illud/gohex/src/cli/endpoint"
 	input "github.com/illud/gohex/src/cli/input"
 	"github.com/schollz/progressbar/v3"
 )
 
-var choices = []string{"New Project", "Module", "DB Service"}
+var choices = []string{"New Project", "Module", "Endpoint", "DB Service"}
 
 type model struct {
 	cursor int
@@ -578,6 +579,36 @@ func Command() {
 
 			bar.Add(1)
 			time.Sleep(40 * time.Millisecond)
+		}
+
+		if m.choice == "Endpoint" {
+			// Specify the root directory (assuming you are in the "crack" folder)
+			root := "./app"
+
+			// Initialize an empty array to store immediate folder names
+			var folderNames []string
+
+			// Walk through the directory and collect immediate folder names
+			err := filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
+				if err != nil {
+					return err
+				}
+				// Check if it's a directory and not the root directory
+				if info.IsDir() && path != root {
+					// Add the folder name to the array
+					folderNames = append(folderNames, info.Name())
+					// Do not enter subdirectories
+					return filepath.SkipDir
+				}
+				return nil
+			})
+
+			if err != nil {
+				fmt.Println("Error:", err)
+				return
+			}
+
+			endpointCli.Command(folderNames)
 		}
 
 		if m.choice == "DB Service" {
