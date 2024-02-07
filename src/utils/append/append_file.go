@@ -1,9 +1,8 @@
-package utils
+package append
 
 import (
 	"bufio"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"strings"
 )
@@ -31,7 +30,7 @@ func AppendDataToFile(filePath string, data string) error {
 
 func ReplaceLastCharacter(filename string, oldChar, newChar string) error {
 	// Read the entire file
-	content, err := ioutil.ReadFile(filename)
+	content, err := os.ReadFile(filename)
 	if err != nil {
 		return err
 	}
@@ -49,11 +48,10 @@ func ReplaceLastCharacter(filename string, oldChar, newChar string) error {
 	contentStr = contentStr[:lastIndex] + newChar + contentStr[lastIndex+1:]
 
 	// Write the modified content back to the file
-	err = ioutil.WriteFile(filename, []byte(contentStr), 0644)
+	err = os.WriteFile(filename, []byte(contentStr), 0644)
 	if err != nil {
 		return err
 	}
 
-	fmt.Println("Last character replaced successfully.")
 	return nil
 }

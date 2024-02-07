@@ -20,6 +20,7 @@ Gohex is a cli tool to create Hexagonal Architecture + Vertical Slicing app for 
 - [Async](#async) - Async functions
 - Auto add swagger for your endpoint
 - [Modules](#modules) - Auto generate module with crud flow
+- [Endpoint](#endpoint) - Auto add new endpoint(POST, GET, PUT, DELETE)
 - [Database Service](#database-service) - Auto generate db service client 
   - Mysql
   - Gorm
@@ -28,7 +29,7 @@ Gohex is a cli tool to create Hexagonal Architecture + Vertical Slicing app for 
 
 ## Installation
 
-Gohex requires [Go](https://golang.org/) v1.17+ to run.
+Gohex requires [Go](https://golang.org/) v1.17 or later to run.
 
 Install the dependencies.
 
@@ -53,6 +54,7 @@ To create a new gin-gonic with Hexagonal Architecture + Vertical Slicing project
 ```
 ▶  New Project
   Module
+  Endpoint
   DB Service
 
 Enter Project Name: yourprojectname
@@ -65,9 +67,35 @@ please use snake_case when the module name consist of two or more words
 ```
   New Project
 ▶  Module
+  Endpoint
   DB Service
 
 Enter Module Name: your_module_name
+```
+
+## Endpoint
+To add a new endpoint to your module:
+
+```
+  New Project
+  Module
+▶  Endpoint
+  DB Service
+```
+
+Pick your module:
+```
+  example_module
+  example_module_two
+▶  current_module
+```
+
+Pick your method:
+```
+  POST
+▶  GET
+  PUT
+  DELETE
 ```
 
 ## Database service
@@ -76,6 +104,7 @@ To create a new db service client with Mysql, Gorm or Prisma:
 ```
   New Project
   Module
+  Endpoint
 ▶  DB Service
 ```
 

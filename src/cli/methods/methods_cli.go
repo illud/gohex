@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	tea "github.com/charmbracelet/bubbletea"
+	base "github.com/illud/gohex/src/base"
 	input "github.com/illud/gohex/src/cli/input"
 )
 
@@ -81,19 +82,25 @@ func Command(module string) {
 			fmt.Printf("\n")
 			fmt.Println("Enter name for method: ")
 			methodName := input.Input()
-			PostMethod(module, methodName)
+			base.PostMethod(module, methodName)
 		}
 		if m.choice == "GET" {
 			fmt.Printf("\n")
 			fmt.Println("Enter name for method: ")
 			methodName := input.Input()
-			GetMethod(module, methodName)
+			base.GetMethod(module, methodName)
 		}
 		if m.choice == "PUT" {
-			fmt.Println(m.choice, " selected ", module)
+			fmt.Printf("\n")
+			fmt.Println("Enter name for method: ")
+			methodName := input.Input()
+			base.PutMethod(module, methodName)
 		}
 		if m.choice == "DELETE" {
-			fmt.Println(m.choice, " selected ", module)
+			fmt.Printf("\n")
+			fmt.Println("Enter name for method: ")
+			methodName := input.Input()
+			base.DeleteMethod(module, methodName)
 		}
 	}
 }

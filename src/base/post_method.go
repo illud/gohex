@@ -1,10 +1,11 @@
-package methods
+package base
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/illud/gohex/src/utils"
+	append "github.com/illud/gohex/src/utils/append"
+	find "github.com/illud/gohex/src/utils/find"
 	regex "github.com/illud/gohex/src/utils/regex"
 	str "github.com/illud/gohex/src/utils/strings"
 )
@@ -43,8 +44,12 @@ func ` + strings.Title(methodName) + `(c *gin.Context) {
 	})
 }
 `
+	controllerResult, err := find.FindFile("app/" + moduleName + "/aplication/")
+	if err != nil {
+		fmt.Println("Error:", err)
+	}
 	// Write the data to the end of the file
-	utils.AppendDataToFile("app/"+moduleName+"/aplication/"+moduleName+".controller.go", controllerString)
+	append.AppendDataToFile("app/"+moduleName+"/aplication/"+*controllerResult, controllerString)
 
 	// 	//Add data to service.go
 	servicesString :=
@@ -57,14 +62,22 @@ func (s *Service) ` + strings.Title(methodName) + `() (*string, error) {
 	return result, nil
 }
 `
-	utils.AppendDataToFile("app/"+moduleName+"/domain/services/"+moduleName+".service.go", servicesString)
+	serviceResult, err := find.FindFile("app/" + moduleName + "/domain/services/")
+	if err != nil {
+		fmt.Println("Error:", err)
+	}
+	append.AppendDataToFile("app/"+moduleName+"/domain/services/"+*serviceResult, servicesString)
 
 	// 	//Add data to module/infraestructure/module.db.go
 	repositoryInterfaceString :=
 		`	` + strings.Title(methodName) + `() (*string, error)
 }`
 
-	err := utils.ReplaceLastCharacter("app/"+moduleName+"/domain/repositories/"+moduleName+".repository.go", "}", repositoryInterfaceString)
+	repositoryResult, err := find.FindFile("app/" + moduleName + "/domain/repositories/")
+	if err != nil {
+		fmt.Println("Error:", err)
+	}
+	err = append.ReplaceLastCharacter("app/"+moduleName+"/domain/repositories/"+*repositoryResult, "}", repositoryInterfaceString)
 	if err != nil {
 		fmt.Println("Error:", err)
 	}
@@ -74,9 +87,13 @@ func (s *Service) ` + strings.Title(methodName) + `() (*string, error) {
 		`
 func (` + str.GetFirstCharacterOfString(moduleName) + ` *` + strings.Title(moduleName) + `Db) ` + strings.Title(methodName) + `() (*string, error) {
 	// Implement your creation logic here
-	var result = "` + strings.Title(moduleName) + ` created"
+	var result = "` + strings.Title(methodName) + ` created"
 	return &result, nil
 }
 `
-	utils.AppendDataToFile("app/"+moduleName+"/infraestructure/"+moduleName+".db.go", infraestructureString)
+	infraestructureResult, err := find.FindFile("app/" + moduleName + "/infraestructure/")
+	if err != nil {
+		fmt.Println("Error:", err)
+	}
+	append.AppendDataToFile("app/"+moduleName+"/infraestructure/"+*infraestructureResult, infraestructureString)
 }
