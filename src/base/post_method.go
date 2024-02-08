@@ -1,7 +1,8 @@
 package base
 
 import (
-	"fmt"
+	"log"
+	"os"
 	"strings"
 
 	append "github.com/illud/gohex/src/utils/append"
@@ -25,7 +26,7 @@ func PostMethod(moduleName string, methodName string) {
 // @Produce json
 // @Param Body body ` + moduleName + `Model.` + strings.Title(moduleName) + ` true "Body to create ` + strings.Title(moduleName) + `"
 // @Success 200
-// @Router /` + regex.StringToHyphen(moduleName) + ` [Post]
+// @Router /` + regex.StringToHyphen(moduleName) + `/` + methodName + ` [Post]
 func ` + strings.Title(methodName) + `(c *gin.Context) {
 	var ` + moduleName + ` ` + moduleName + `Model.` + strings.Title(moduleName) + `
 	if err := c.ShouldBindJSON(&` + moduleName + `); err != nil {
@@ -46,7 +47,7 @@ func ` + strings.Title(methodName) + `(c *gin.Context) {
 `
 	controllerResult, err := find.FindFile("app/" + moduleName + "/aplication/")
 	if err != nil {
-		fmt.Println("Error:", err)
+		log.Fatal(err)
 	}
 	// Write the data to the end of the file
 	append.AppendDataToFile("app/"+moduleName+"/aplication/"+*controllerResult, controllerString)
@@ -64,7 +65,7 @@ func (s *Service) ` + strings.Title(methodName) + `() (*string, error) {
 `
 	serviceResult, err := find.FindFile("app/" + moduleName + "/domain/services/")
 	if err != nil {
-		fmt.Println("Error:", err)
+		log.Fatal(err)
 	}
 	append.AppendDataToFile("app/"+moduleName+"/domain/services/"+*serviceResult, servicesString)
 
@@ -75,11 +76,11 @@ func (s *Service) ` + strings.Title(methodName) + `() (*string, error) {
 
 	repositoryResult, err := find.FindFile("app/" + moduleName + "/domain/repositories/")
 	if err != nil {
-		fmt.Println("Error:", err)
+		log.Fatal(err)
 	}
 	err = append.ReplaceLastCharacter("app/"+moduleName+"/domain/repositories/"+*repositoryResult, "}", repositoryInterfaceString)
 	if err != nil {
-		fmt.Println("Error:", err)
+		log.Fatal(err)
 	}
 
 	// 	//Add data to module/infraestructure/module.db.go
@@ -93,7 +94,29 @@ func (` + str.GetFirstCharacterOfString(moduleName) + ` *` + strings.Title(modul
 `
 	infraestructureResult, err := find.FindFile("app/" + moduleName + "/infraestructure/")
 	if err != nil {
-		fmt.Println("Error:", err)
+		log.Fatal(err)
 	}
 	append.AppendDataToFile("app/"+moduleName+"/infraestructure/"+*infraestructureResult, infraestructureString)
+
+	// Add endpoint to router.go
+	input, err := os.ReadFile("router/router.go")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	lines := strings.Split(string(input), "\n")
+
+	for i, line := range lines {
+		if strings.Contains(line, "//"+moduleName) {
+			lines[i] = `	//` + moduleName + ` 
+	router.POST("/` + moduleName + `/` + methodName + `", ` + moduleName + `Controller.` + strings.Title(methodName) + `)`
+		}
+
+	}
+
+	output := strings.Join(lines, "\n")
+	err = os.WriteFile("router/router.go", []byte(output), 0644)
+	if err != nil {
+		log.Fatal(err)
+	}
 }

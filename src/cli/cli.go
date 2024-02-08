@@ -2,6 +2,7 @@ package cli
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -604,7 +605,7 @@ func Command() {
 			})
 
 			if err != nil {
-				fmt.Println("Error:", err)
+				log.Fatal(err)
 				return
 			}
 
