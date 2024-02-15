@@ -64,7 +64,7 @@ func Create` + strings.Title(moduleName) + `(c *gin.Context) {
 		return
 	}
 
-	result, err := service.Create` + strings.Title(moduleName) + `()
+	result, err := service.Create` + strings.Title(moduleName) + `(&` + moduleName + `)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -223,8 +223,8 @@ func NewService(` + moduleName + `Repository ` + moduleName + `Interface.I` + st
 	}
 }
 
-func (s *Service) Create` + strings.Title(moduleName) + `() (*string, error) {
-	result, err := s.` + moduleName + `Repository.Create` + strings.Title(moduleName) + `()
+func (s *Service) Create` + strings.Title(moduleName) + `(` + moduleName + ` *` + moduleName + `Model.` + strings.Title(moduleName) + `) (*string, error) {
+	result, err := s.` + moduleName + `Repository.Create` + strings.Title(moduleName) + `(` + moduleName + `)
 	if err != nil {
 		return nil, err
 	}
@@ -274,7 +274,7 @@ import (
 )
 
 type I` + strings.Title(moduleName) + ` interface {
-	Create` + strings.Title(moduleName) + `() (*string, error)
+	Create` + strings.Title(moduleName) + `(` + moduleName + ` *` + moduleName + `Model.` + strings.Title(moduleName) + `) (*string, error)
 	Get` + strings.Title(moduleName) + `() ([]*` + moduleName + `Model.` + strings.Title(moduleName) + `, error)
 	GetOne` + strings.Title(moduleName) + `(` + moduleName + `Id int) (*` + moduleName + `Model.` + strings.Title(moduleName) + `, error)
 	Update` + strings.Title(moduleName) + `(` + moduleName + `Id int) (*string, error)
@@ -289,6 +289,7 @@ type I` + strings.Title(moduleName) + ` interface {
 
 import (
 	` + moduleName + `Model "` + currentDirName + `/app/` + moduleName + `/domain/models"
+	"strconv"
 	// uncomment this a change _ for db when you are making database queries
 	_ "` + currentDirName + `/adapters/database"
 )
@@ -304,9 +305,9 @@ func New` + strings.Title(moduleName) + `Db() *` + strings.Title(moduleName) + `
 
 var ` + moduleName + ` []` + moduleName + `Model.` + strings.Title(moduleName) + `
 
-func (` + str.GetFirstCharacterOfString(moduleName) + ` *` + strings.Title(moduleName) + `Db) Create` + strings.Title(moduleName) + `() (*string, error) {
+func (` + str.GetFirstCharacterOfString(moduleName) + ` *` + strings.Title(moduleName) + `Db) Create` + strings.Title(moduleName) + `(` + moduleName + ` *` + moduleName + `Model.` + strings.Title(moduleName) + `) (*string, error) {
 	// Implement your creation logic here
-	var result = "` + strings.Title(moduleName) + ` created"
+	var result = "` + strings.Title(moduleName) + ` with id " + strconv.Itoa(` + moduleName + `.Id) + " created"
 	return &result, nil
 }
 
