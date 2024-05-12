@@ -281,7 +281,7 @@ func Command() {
 			time.Sleep(40 * time.Millisecond)
 
 			if runtime.GOOS == "windows" {
-				cmd := exec.Command("cmd", "/c", "go mod init "+folderName)
+				cmd := exec.Command("cmd", "/c", "go mod init github.com/"+folderName)
 				cmd.Dir = folderName
 
 				//INSTALL DEPENDENCIES

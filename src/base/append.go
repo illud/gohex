@@ -36,7 +36,7 @@ func AppendToRoutingCrud(moduleName string) {
 	for i, line := range lines {
 		if strings.Contains(line, "import (") || strings.Contains(line, "import(") {
 			lines[i] = `import (
-	` + moduleName + `Controller "` + currentDirName + `/app/` + moduleName + `/aplication"`
+	` + moduleName + `Controller "github.com/` + currentDirName + `/app/` + moduleName + `/aplication"`
 		}
 
 		if strings.Contains(line, "return router") {

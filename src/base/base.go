@@ -13,9 +13,9 @@ import (
 	"fmt"
 	"strconv"
 	//Uncomment next line when you want to connect to a database
-	//db "` + folderName + `/adapters/database"
-	env "` + folderName + `/env"
-	router "` + folderName + `/router"
+	//db "github.com/` + folderName + `/adapters/database"
+	env "github.com/` + folderName + `/env"
+	router "github.com/` + folderName + `/router"
 )
 
 //The next lines are for swagger docs
@@ -52,11 +52,11 @@ func main() {
 		`package router
 
 import (
-	tasksController "` + folderName + `/app/tasks/aplication"
+	tasksController "github.com/` + folderName + `/app/tasks/aplication"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 
-	docs "` + folderName + `/docs"
+	docs "github.com/` + folderName + `/docs"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
@@ -244,9 +244,9 @@ import (
 	"strconv"
 	"net/http"
 	"github.com/gin-gonic/gin"
-	tasksService "` + folderName + `/app/tasks/domain/services"
-	tasksDatabase "` + folderName + `/app/tasks/infraestructure"
-	tasksModel "` + folderName + `/app/tasks/domain/models"
+	tasksService "github.com/` + folderName + `/app/tasks/domain/services"
+	tasksDatabase "github.com/` + folderName + `/app/tasks/infraestructure"
+	tasksModel "github.com/` + folderName + `/app/tasks/domain/models"
 )
 
 // Create a TasksDb instance
@@ -272,13 +272,13 @@ func CreateTasks(c *gin.Context) {
 		return
 	}
 
-	result, err := service.CreateTasks(task.Id, task.Title, task.Description)
+	err := service.CreateTasks(task.Id, task.Title, task.Description)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": result})
+	c.JSON(http.StatusOK, gin.H{"data": "task created"})
 }
 
 // GetTasks retrieves all tasks.
@@ -345,13 +345,13 @@ func UpdateTasks(c *gin.Context) {
 		return
 	}
 
-	result, err := service.UpdateTasks(taskId, task.Title, task.Description)
+	err := service.UpdateTasks(taskId, task.Title, task.Description)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": result})
+	c.JSON(http.StatusOK, gin.H{"data": "task updated"})
 }
 
 // DeleteTasks handles deleting a task by taskId.
@@ -367,13 +367,13 @@ func UpdateTasks(c *gin.Context) {
 func DeleteTasks(c *gin.Context) {
 	taskId := c.Param("taskId")
 
-	result, err := service.DeleteTasks(taskId)
+	err := service.DeleteTasks(taskId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": result})
+	c.JSON(http.StatusOK, gin.H{"data": "task deleted"})
 }`
 	taskControllerBytes := []byte(taskControllerString)
 	os.WriteFile(folderName+"/app/tasks/aplication/tasks.controller.go", taskControllerBytes, 0)
@@ -395,15 +395,15 @@ type Task struct {
 		`package repositories
 
 import (
-	tasksModel "` + folderName + `/app/tasks/domain/models"
+	tasksModel "github.com/` + folderName + `/app/tasks/domain/models"
 )
 
 type ITasks interface {
-	CreateTasks(taskId int, title string, description string) (*string, error)
-	GetTasks() ([]*tasksModel.Task, error)
-	GetOneTasks(taskId int) (*tasksModel.Task, error)
-	UpdateTasks(taskId string, title string, description string) (*string, error)
-	DeleteTasks(taskId string) (*string, error)
+	CreateTasks(taskId int, title string, description string)  error
+	GetTasks() ([]tasksModel.Task, error)
+	GetOneTasks(taskId int) (tasksModel.Task, error)
+	UpdateTasks(taskId string, title string, description string)  error
+	DeleteTasks(taskId string) error
 }`
 	taskRepositoryBytes := []byte(taskRepositoryString)
 	os.WriteFile(folderName+"/app/tasks/domain/repositories/tasks.repository.go", taskRepositoryBytes, 0)
@@ -413,8 +413,8 @@ type ITasks interface {
 		`package services
 
 import (
-	tasksModel "` + folderName + `/app/tasks/domain/models"
-	tasksInterface "` + folderName + `/app/tasks/domain/repositories"
+	tasksModel "github.com/` + folderName + `/app/tasks/domain/models"
+	tasksInterface "github.com/` + folderName + `/app/tasks/domain/repositories"
 )
 
 type Service struct {
@@ -427,15 +427,15 @@ func NewService(tasksRepository tasksInterface.ITasks) *Service {
 	}
 }
 
-func (s *Service) CreateTasks(taskId int, title string, description string) (*string, error) {
-	result, err := s.tasksRepository.CreateTasks(taskId, title, description)
+func (s *Service) CreateTasks(taskId int, title string, description string) error {
+	 err := s.tasksRepository.CreateTasks(taskId, title, description)
 	if err != nil {
-		return nil, err
+		return  err
 	}
-	return result, nil
+	return nil
 }
 
-func (s *Service) GetTasks() ([]*tasksModel.Task, error) {
+func (s *Service) GetTasks() ([]tasksModel.Task, error) {
 	tasks, err := s.tasksRepository.GetTasks()
 	if err != nil {
 		return nil, err
@@ -443,28 +443,28 @@ func (s *Service) GetTasks() ([]*tasksModel.Task, error) {
 	return tasks, nil
 }
 
-func (s *Service) GetOneTasks(taskId int) (*tasksModel.Task, error) {
+func (s *Service) GetOneTasks(taskId int) (tasksModel.Task, error) {
 	task, err := s.tasksRepository.GetOneTasks(taskId)
 	if err != nil {
-		return nil, err
+		return tasksModel.Task{}, err
 	}
 	return task, nil
 }
 
-func (s *Service) UpdateTasks(taskId string, title string, description string) (*string, error) {
-	result, err := s.tasksRepository.UpdateTasks(taskId, title, description)
+func (s *Service) UpdateTasks(taskId string, title string, description string) error {
+	err := s.tasksRepository.UpdateTasks(taskId, title, description)
 	if err != nil {
-		return nil, err
+		return  err
 	}
-	return result, nil
+	return  nil
 }
 
-func (s *Service) DeleteTasks(taskId string) (*string, error) {
-	result, err := s.tasksRepository.DeleteTasks(taskId)
+func (s *Service) DeleteTasks(taskId string) error {
+	err := s.tasksRepository.DeleteTasks(taskId)
 	if err != nil {
-		return nil, err
+		return  err
 	}
-	return result, nil
+	return  nil
 }`
 	taskServiceBytes := []byte(taskServiceString)
 	os.WriteFile(folderName+"/app/tasks/domain/services/tasks.service.go", taskServiceBytes, 0)
@@ -474,9 +474,9 @@ func (s *Service) DeleteTasks(taskId string) (*string, error) {
 		`package infraestructure
 
 import (
-	tasksModel "` + folderName + `/app/tasks/domain/models"
+	tasksModel "github.com/` + folderName + `/app/tasks/domain/models"
 	// uncomment this a change _ for db when your are making database queries
-	_ "` + folderName + `/adapters/database"
+	_ "github.com/` + folderName + `/adapters/database"
 	"errors"
 )
 
@@ -489,9 +489,9 @@ func NewTasksDb() *TasksDb {
 	return &TasksDb{}
 }
 
-func (t *TasksDb) CreateTasks(taskId int, title string, description string) (*string, error) {
+func (t *TasksDb) CreateTasks(taskId int, title string, description string) error {
 	if taskId == 0 {
-		return nil, errors.New("taskId is required")
+		return errors.New("taskId is required")
 	}
 
 	var task tasksModel.Task
@@ -499,40 +499,35 @@ func (t *TasksDb) CreateTasks(taskId int, title string, description string) (*st
 	task.Title = title
 	task.Description = description
 
-	message := "Task created"
-	return &message, nil
+	return  nil
 }
 
-func (t *TasksDb) GetTasks() ([]*tasksModel.Task, error) {
-	var tasks []*tasksModel.Task
-	tasks = append(tasks, &tasksModel.Task{Id: 1, Title: "Hello", Description: "World"})
+func (t *TasksDb) GetTasks() ([]tasksModel.Task, error) {
+	var tasks []tasksModel.Task
+	tasks = append(tasks, tasksModel.Task{Id: 1, Title: "Hello", Description: "World"})
 	return tasks, nil
 }
 
-func (t *TasksDb) GetOneTasks(taskId int) (*tasksModel.Task, error) {
-	task := &tasksModel.Task{Id: taskId, Title: "Sample Task", Description: "Sample Description"}
-	if task == nil {
-		return nil, errors.New("Task not found")
-	}
+func (t *TasksDb) GetOneTasks(taskId int) (tasksModel.Task, error) {
+	task := tasksModel.Task{Id: taskId, Title: "Sample Task", Description: "Sample Description"}
+    if task.Id == 0 {
+        return tasksModel.Task{}, errors.New("Task not found")
+    }
 	return task, nil
 }
 
-func (t *TasksDb) UpdateTasks(taskId string, title string, description string) (*string, error) {
+func (t *TasksDb) UpdateTasks(taskId string, title string, description string) error {
 	if taskId == "" {
-		return nil, errors.New("taskId is required")
+		return  errors.New("taskId is required")
 	}
-
-	result := "Task updated"
-	return &result, nil
+	return nil
 }
 
-func (t *TasksDb) DeleteTasks(taskId string) (*string, error) {
+func (t *TasksDb) DeleteTasks(taskId string)  error {
 	if taskId == "" {
-		return nil, errors.New("taskId is required")
+		return errors.New("taskId is required")
 	}
-
-	result := "Task deleted"
-	return &result, nil
+	return nil
 }`
 	taskInfraestructureBytes := []byte(taskInfraestructureString)
 	os.WriteFile(folderName+"/app/tasks/infraestructure/tasks.db.go", taskInfraestructureBytes, 0)
@@ -542,7 +537,7 @@ func (t *TasksDb) DeleteTasks(taskId string) (*string, error) {
 
 import (
 	"fmt"
-	tasksModel "` + folderName + `/app/tasks/domain/models"
+	tasksModel "github.com/` + folderName + `/app/tasks/domain/models"
 
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -723,12 +718,12 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	router "` + folderName + `/router"
-	token "` + folderName + `/adapters/jwt"
+	router "github.com/` + folderName + `/router"
+	token "github.com/` + folderName + `/adapters/jwt"
 
 	/*
 		- Uncomment this when you are testing real data coming from database.
-		db "github.com/app/` + folderName + `/infraestructure"
+		db "github.com/app/` + folderName + `/adapters/database"
 	*/
 )
 

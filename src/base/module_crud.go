@@ -34,10 +34,10 @@ import (
 	"strconv"
 	"net/http"
 	"github.com/gin-gonic/gin"
-	` + moduleName + `Services "` + currentDirName + `/app/` + moduleName + `/domain/services"
-	` + moduleName + `Database "` + currentDirName + `/app/` + moduleName + `/infraestructure"
+	` + moduleName + `Services "github.com/` + currentDirName + `/app/` + moduleName + `/domain/services"
+	` + moduleName + `Database "github.com/` + currentDirName + `/app/` + moduleName + `/infraestructure"
 	// Replace for dto
-	` + moduleName + `Model "` + currentDirName + `/app/` + moduleName + `/domain/models"
+	` + moduleName + `Model "github.com/` + currentDirName + `/app/` + moduleName + `/domain/models"
 )
 
 // Create a ` + moduleName + `Db instance
@@ -64,14 +64,14 @@ func Create` + strings.Title(moduleName) + `(c *gin.Context) {
 		return
 	}
 
-	result, err := service.Create` + strings.Title(moduleName) + `(&` + moduleName + `)
+	err := service.Create` + strings.Title(moduleName) + `(` + moduleName + `)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"data": result,
+		"data": "` + moduleName + ` created",
 	})
 }
 
@@ -151,14 +151,14 @@ func Update` + strings.Title(moduleName) + `(c *gin.Context) {
 		return
 	}
 
-	result, err := service.Update` + strings.Title(moduleName) + `(` + moduleName + `Id)
+	 err = service.Update` + strings.Title(moduleName) + `(` + moduleName + `Id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"data": result,
+		"data": "` + moduleName + ` updated",
 	})
 }
 
@@ -180,14 +180,14 @@ func Delete` + strings.Title(moduleName) + `(c *gin.Context) {
 		return
 	}
 
-	result, err := service.Delete` + strings.Title(moduleName) + `(` + moduleName + `Id)
+	err = service.Delete` + strings.Title(moduleName) + `(` + moduleName + `Id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"data": result,
+		"data": "` + moduleName + ` deleted",
 	})
 }
 `
@@ -209,8 +209,8 @@ type ` + strings.Title(moduleName) + ` struct {
 		`package services
 
 import (
-	` + moduleName + `Model "` + currentDirName + `/app/` + moduleName + `/domain/models"
-	` + moduleName + `Interface "` + currentDirName + `/app/` + moduleName + `/domain/repositories"
+	` + moduleName + `Model "github.com/` + currentDirName + `/app/` + moduleName + `/domain/models"
+	` + moduleName + `Interface "github.com/` + currentDirName + `/app/` + moduleName + `/domain/repositories"
 )
 
 type Service struct {
@@ -223,15 +223,15 @@ func NewService(` + moduleName + `Repository ` + moduleName + `Interface.I` + st
 	}
 }
 
-func (s *Service) Create` + strings.Title(moduleName) + `(` + moduleName + ` *` + moduleName + `Model.` + strings.Title(moduleName) + `) (*string, error) {
-	result, err := s.` + moduleName + `Repository.Create` + strings.Title(moduleName) + `(` + moduleName + `)
+func (s *Service) Create` + strings.Title(moduleName) + `(` + moduleName + ` ` + moduleName + `Model.` + strings.Title(moduleName) + `)  error {
+	err := s.` + moduleName + `Repository.Create` + strings.Title(moduleName) + `(` + moduleName + `)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return result, nil
+	return nil
 }
 
-func (s *Service) Get` + strings.Title(moduleName) + `() ([]*` + moduleName + `Model.` + strings.Title(moduleName) + `, error) {
+func (s *Service) Get` + strings.Title(moduleName) + `() ([]` + moduleName + `Model.` + strings.Title(moduleName) + `, error) {
 	result, err := s.` + moduleName + `Repository.Get` + strings.Title(moduleName) + `()
 	if err != nil {
 		return nil, err
@@ -239,28 +239,28 @@ func (s *Service) Get` + strings.Title(moduleName) + `() ([]*` + moduleName + `M
 	return result, nil
 }
 
-func (s *Service) GetOne` + strings.Title(moduleName) + `(` + moduleName + `Id int) (*` + moduleName + `Model.` + strings.Title(moduleName) + `, error) {
+func (s *Service) GetOne` + strings.Title(moduleName) + `(` + moduleName + `Id int) (` + moduleName + `Model.` + strings.Title(moduleName) + `, error) {
 	result, err := s.` + moduleName + `Repository.GetOne` + strings.Title(moduleName) + `(` + moduleName + `Id)
 	if err != nil {
-		return nil, err
+		return ` + moduleName + `Model.` + strings.Title(moduleName) + `{} , err
 	}
 	return result, nil
 }
 
-func (s *Service) Update` + strings.Title(moduleName) + `(` + moduleName + `Id int) (*string, error) {
-	result, err := s.` + moduleName + `Repository.Update` + strings.Title(moduleName) + `(` + moduleName + `Id)
+func (s *Service) Update` + strings.Title(moduleName) + `(` + moduleName + `Id int) error {
+	err := s.` + moduleName + `Repository.Update` + strings.Title(moduleName) + `(` + moduleName + `Id)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return result, nil
+	return nil
 }
 
-func (s *Service) Delete` + strings.Title(moduleName) + `(` + moduleName + `Id int) (*string, error) {
-	result, err := s.` + moduleName + `Repository.Delete` + strings.Title(moduleName) + `(` + moduleName + `Id)
+func (s *Service) Delete` + strings.Title(moduleName) + `(` + moduleName + `Id int) error {
+	err := s.` + moduleName + `Repository.Delete` + strings.Title(moduleName) + `(` + moduleName + `Id)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return result, nil
+	return nil
 }`
 	servicesBytes := []byte(servicesString)
 	os.WriteFile("app/"+moduleName+"/domain/services/"+moduleNameSnakeCase+".service.go", servicesBytes, 0)
@@ -270,15 +270,15 @@ func (s *Service) Delete` + strings.Title(moduleName) + `(` + moduleName + `Id i
 		`package repositories
 
 import (
-	` + moduleName + `Model "` + currentDirName + `/app/` + moduleName + `/domain/models"
+	` + moduleName + `Model "github.com/` + currentDirName + `/app/` + moduleName + `/domain/models"
 )
 
 type I` + strings.Title(moduleName) + ` interface {
-	Create` + strings.Title(moduleName) + `(` + moduleName + ` *` + moduleName + `Model.` + strings.Title(moduleName) + `) (*string, error)
-	Get` + strings.Title(moduleName) + `() ([]*` + moduleName + `Model.` + strings.Title(moduleName) + `, error)
-	GetOne` + strings.Title(moduleName) + `(` + moduleName + `Id int) (*` + moduleName + `Model.` + strings.Title(moduleName) + `, error)
-	Update` + strings.Title(moduleName) + `(` + moduleName + `Id int) (*string, error)
-	Delete` + strings.Title(moduleName) + `(` + moduleName + `Id int) (*string, error)
+	Create` + strings.Title(moduleName) + `(` + moduleName + ` ` + moduleName + `Model.` + strings.Title(moduleName) + `) error
+	Get` + strings.Title(moduleName) + `() ([]` + moduleName + `Model.` + strings.Title(moduleName) + `, error)
+	GetOne` + strings.Title(moduleName) + `(` + moduleName + `Id int) (` + moduleName + `Model.` + strings.Title(moduleName) + `, error)
+	Update` + strings.Title(moduleName) + `(` + moduleName + `Id int) error
+	Delete` + strings.Title(moduleName) + `(` + moduleName + `Id int) error
 }`
 	repositoryInterfaceBytes := []byte(repositoryInterfaceString)
 	os.WriteFile("app/"+moduleName+"/domain/repositories/"+moduleNameSnakeCase+".repository.go", repositoryInterfaceBytes, 0)
@@ -288,10 +288,9 @@ type I` + strings.Title(moduleName) + ` interface {
 		`package infraestructure
 
 import (
-	` + moduleName + `Model "` + currentDirName + `/app/` + moduleName + `/domain/models"
-	"strconv"
+	` + moduleName + `Model "github.com/` + currentDirName + `/app/` + moduleName + `/domain/models"
 	// uncomment this a change _ for db when you are making database queries
-	_ "` + currentDirName + `/adapters/database"
+	_ "github.com/` + currentDirName + `/adapters/database"
 )
 
 type ` + strings.Title(moduleName) + `Db struct {
@@ -305,34 +304,31 @@ func New` + strings.Title(moduleName) + `Db() *` + strings.Title(moduleName) + `
 
 var ` + moduleName + ` []` + moduleName + `Model.` + strings.Title(moduleName) + `
 
-func (` + str.GetFirstCharacterOfString(moduleName) + ` *` + strings.Title(moduleName) + `Db) Create` + strings.Title(moduleName) + `(` + moduleName + ` *` + moduleName + `Model.` + strings.Title(moduleName) + `) (*string, error) {
+func (` + str.GetFirstCharacterOfString(moduleName) + ` *` + strings.Title(moduleName) + `Db) Create` + strings.Title(moduleName) + `(` + moduleName + ` ` + moduleName + `Model.` + strings.Title(moduleName) + `) error {
 	// Implement your creation logic here
-	var result = "` + strings.Title(moduleName) + ` with id " + strconv.Itoa(` + moduleName + `.Id) + " created"
-	return &result, nil
+	return nil
 }
 
-func (` + str.GetFirstCharacterOfString(moduleName) + ` *` + strings.Title(moduleName) + `Db) Get` + strings.Title(moduleName) + `() ([]*` + moduleName + `Model.` + strings.Title(moduleName) + `, error) {
+func (` + str.GetFirstCharacterOfString(moduleName) + ` *` + strings.Title(moduleName) + `Db) Get` + strings.Title(moduleName) + `() ([]` + moduleName + `Model.` + strings.Title(moduleName) + `, error) {
 	// Implement your retrieval logic here
-	var ` + moduleName + ` []*` + moduleName + `Model.` + strings.Title(moduleName) + `
-	` + moduleName + ` = append(` + moduleName + `, &` + moduleName + `Model.` + strings.Title(moduleName) + `{Id: 1})
+	var ` + moduleName + ` []` + moduleName + `Model.` + strings.Title(moduleName) + `
+	` + moduleName + ` = append(` + moduleName + `, ` + moduleName + `Model.` + strings.Title(moduleName) + `{Id: 1})
 	return ` + moduleName + `, nil
 }
 
-func (` + str.GetFirstCharacterOfString(moduleName) + ` *` + strings.Title(moduleName) + `Db) GetOne` + strings.Title(moduleName) + `(` + moduleName + `Id int) (*` + moduleName + `Model.` + strings.Title(moduleName) + `, error) {
+func (` + str.GetFirstCharacterOfString(moduleName) + ` *` + strings.Title(moduleName) + `Db) GetOne` + strings.Title(moduleName) + `(` + moduleName + `Id int) (` + moduleName + `Model.` + strings.Title(moduleName) + `, error) {
 	// Implement your single retrieval logic here
-	return &` + moduleName + `Model.` + strings.Title(moduleName) + `{Id: ` + moduleName + `Id}, nil
+	return ` + moduleName + `Model.` + strings.Title(moduleName) + `{Id: ` + moduleName + `Id}, nil
 }
 
-func (` + str.GetFirstCharacterOfString(moduleName) + ` *` + strings.Title(moduleName) + `Db) Update` + strings.Title(moduleName) + `(` + moduleName + `Id int) (*string, error) {
+func (` + str.GetFirstCharacterOfString(moduleName) + ` ` + strings.Title(moduleName) + `Db) Update` + strings.Title(moduleName) + `(` + moduleName + `Id int)  error {
 	// Implement your update logic here
-	var result = "` + strings.Title(moduleName) + ` updated"
-	return &result, nil
+	return nil
 }
 
-func (` + str.GetFirstCharacterOfString(moduleName) + ` *` + strings.Title(moduleName) + `Db) Delete` + strings.Title(moduleName) + `(` + moduleName + `Id int) (*string, error) {
+func (` + str.GetFirstCharacterOfString(moduleName) + ` ` + strings.Title(moduleName) + `Db) Delete` + strings.Title(moduleName) + `(` + moduleName + `Id int) error {
 	// Implement your deletion logic here
-	var result = "` + strings.Title(moduleName) + ` deleted"
-	return &result, nil
+	return nil
 }`
 	infraestructureBytes := []byte(infraestructureString)
 	os.WriteFile("app/"+moduleName+"/infraestructure/"+moduleNameSnakeCase+".db.go", infraestructureBytes, 0)
@@ -350,8 +346,8 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	router "` + currentDirName + `/router"
-	token "` + currentDirName + `/adapters/jwt"
+	router "github.com/` + currentDirName + `/router"
+	token "github.com/` + currentDirName + `/adapters/jwt"
 
 	/*
 		- Uncomment this when you are testing real data coming from database.

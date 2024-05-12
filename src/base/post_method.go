@@ -34,14 +34,14 @@ func ` + strings.Title(methodName) + `(c *gin.Context) {
 		return
 	}
 
-	result, err := service.` + strings.Title(methodName) + `()
+	err := service.` + strings.Title(methodName) + `(` + moduleName + `)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"data": result,
+		"data": "` + moduleName + ` created",
 	})
 }
 `
@@ -55,12 +55,12 @@ func ` + strings.Title(methodName) + `(c *gin.Context) {
 	// 	//Add data to service.go
 	servicesString :=
 		`
-func (s *Service) ` + strings.Title(methodName) + `() (*string, error) {
-	result, err := s.` + moduleName + `Repository.` + strings.Title(methodName) + `()
+func (s *Service) ` + strings.Title(methodName) + `(` + moduleName + ` ` + moduleName + `Model.` + strings.Title(moduleName) + `) error {
+	err := s.` + moduleName + `Repository.` + strings.Title(methodName) + `(` + moduleName + `)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return result, nil
+	return nil
 }
 `
 	serviceResult, err := find.FindFile("app/" + moduleName + "/domain/services/")
@@ -71,7 +71,7 @@ func (s *Service) ` + strings.Title(methodName) + `() (*string, error) {
 
 	// 	//Add data to module/infraestructure/module.db.go
 	repositoryInterfaceString :=
-		`	` + strings.Title(methodName) + `() (*string, error)
+		`	` + strings.Title(methodName) + `(` + moduleName + ` ` + moduleName + `Model.` + strings.Title(moduleName) + `)  error
 }`
 
 	repositoryResult, err := find.FindFile("app/" + moduleName + "/domain/repositories/")
@@ -86,10 +86,9 @@ func (s *Service) ` + strings.Title(methodName) + `() (*string, error) {
 	// 	//Add data to module/infraestructure/module.db.go
 	infraestructureString :=
 		`
-func (` + str.GetFirstCharacterOfString(moduleName) + ` *` + strings.Title(moduleName) + `Db) ` + strings.Title(methodName) + `() (*string, error) {
+func (` + str.GetFirstCharacterOfString(moduleName) + ` ` + strings.Title(moduleName) + `Db) ` + strings.Title(methodName) + `(` + moduleName + ` ` + moduleName + `Model.` + strings.Title(moduleName) + `) error {
 	// Implement your creation logic here
-	var result = "` + strings.Title(methodName) + ` created"
-	return &result, nil
+	return  nil
 }
 `
 	infraestructureResult, err := find.FindFile("app/" + moduleName + "/infraestructure/")

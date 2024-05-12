@@ -48,7 +48,7 @@ func ` + strings.Title(methodName) + `(c *gin.Context) {
 	// 	//Add data to service.go
 	servicesString :=
 		`
-func (s *Service) ` + strings.Title(methodName) + `() ([]*` + moduleName + `Model.` + strings.Title(moduleName) + `, error) {
+func (s *Service) ` + strings.Title(methodName) + `() ([]` + moduleName + `Model.` + strings.Title(moduleName) + `, error) {
 	result, err := s.` + moduleName + `Repository.` + strings.Title(methodName) + `()
 	if err != nil {
 		return nil, err
@@ -63,7 +63,7 @@ func (s *Service) ` + strings.Title(methodName) + `() ([]*` + moduleName + `Mode
 
 	// 	//Add data to module/infraestructure/module.db.go
 	repositoryInterfaceString :=
-		`	` + strings.Title(methodName) + `() ([]*` + moduleName + `Model.` + strings.Title(moduleName) + `, error)
+		`	` + strings.Title(methodName) + `() ([]` + moduleName + `Model.` + strings.Title(moduleName) + `, error)
 }`
 
 	repositoryResult, err := find.FindFile("app/" + moduleName + "/domain/repositories/")
@@ -78,10 +78,10 @@ func (s *Service) ` + strings.Title(methodName) + `() ([]*` + moduleName + `Mode
 	// 	//Add data to module/infraestructure/module.db.go
 	infraestructureString :=
 		`
-func (` + str.GetFirstCharacterOfString(moduleName) + ` *` + strings.Title(moduleName) + `Db) ` + strings.Title(methodName) + `() ([]*` + moduleName + `Model.` + strings.Title(moduleName) + `, error) {
+func (` + str.GetFirstCharacterOfString(moduleName) + ` ` + strings.Title(moduleName) + `Db) ` + strings.Title(methodName) + `() ([]` + moduleName + `Model.` + strings.Title(moduleName) + `, error) {
 	// Implement your retrieval logic here
-	var ` + moduleName + ` []*` + moduleName + `Model.` + strings.Title(moduleName) + `
-	` + moduleName + ` = append(` + moduleName + `, &` + moduleName + `Model.` + strings.Title(moduleName) + `{Id: 1})
+	var ` + moduleName + ` []` + moduleName + `Model.` + strings.Title(moduleName) + `
+	` + moduleName + ` = append(` + moduleName + `, ` + moduleName + `Model.` + strings.Title(moduleName) + `{Id: 1})
 	return ` + moduleName + `, nil
 }`
 	infraestructureResult, err := find.FindFile("app/" + moduleName + "/infraestructure/")
