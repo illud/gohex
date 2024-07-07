@@ -279,6 +279,10 @@ Folder Structure:
         router.go
 ```
 
+## Todo
+- Add correct endpoint name when generating a new method
+- Select when choosing a folder, is not adding the hyphne
+
 ## License
 
 MIT

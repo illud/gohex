@@ -547,12 +547,12 @@ func Command() {
 			time.Sleep(40 * time.Millisecond)
 
 			//Generates module with crud data
-			base.BaseModuleCrud(moduleName, moduleNameSnakeCase)
+			base.BaseModuleCrud(moduleName, moduleNameSnakeCase, module)
 			bar.Add(1)
 			time.Sleep(40 * time.Millisecond)
 
 			//Append controller to routing.go file
-			base.AppendToRoutingCrud(moduleName)
+			base.AppendToRoutingCrud(moduleName, module)
 			bar.Add(1)
 			time.Sleep(40 * time.Millisecond)
 

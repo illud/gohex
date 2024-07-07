@@ -10,7 +10,7 @@ import (
 	str "github.com/illud/gohex/src/utils/strings"
 )
 
-func BaseModuleCrud(moduleName string, moduleNameSnakeCase string) {
+func BaseModuleCrud(moduleName string, moduleNameSnakeCase string, moduleNotModify string) {
 
 	dir, err := os.Getwd()
 	if err != nil {
@@ -56,7 +56,7 @@ var service = ` + moduleName + `Services.NewService(` + moduleName + `Db)
 // @Produce json
 // @Param Body body ` + moduleName + `Model.` + strings.Title(moduleName) + ` true "Body to create ` + strings.Title(moduleName) + `"
 // @Success 200
-// @Router /` + regex.StringToHyphen(moduleName) + ` [Post]
+// @Router /` + regex.ToKebabCase(moduleNotModify) + ` [Post]
 func Create` + strings.Title(moduleName) + `(c *gin.Context) {
 	var ` + moduleName + ` ` + moduleName + `Model.` + strings.Title(moduleName) + `
 	if err := c.ShouldBindJSON(&` + moduleName + `); err != nil {
@@ -84,7 +84,7 @@ func Create` + strings.Title(moduleName) + `(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Success 200
-// @Router /` + regex.StringToHyphen(moduleName) + ` [Get]
+// @Router /` + regex.ToKebabCase(moduleNotModify) + ` [Get]
 func Get` + strings.Title(moduleName) + `(c *gin.Context) {
 	result, err := service.Get` + strings.Title(moduleName) + `()
 	if err != nil {
@@ -107,7 +107,7 @@ func Get` + strings.Title(moduleName) + `(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Success 200
-// @Router /` + regex.StringToHyphen(moduleName) + `/{` + moduleName + `Id} [Get]
+// @Router /` + regex.ToKebabCase(moduleNotModify) + `/{` + regex.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id} [Get]
 func GetOne` + strings.Title(moduleName) + `(c *gin.Context) {
 	` + moduleName + `Id, err := strconv.Atoi(c.Param("` + moduleName + `Id"))
 	if err != nil {
@@ -137,7 +137,7 @@ func GetOne` + strings.Title(moduleName) + `(c *gin.Context) {
 // @Produce json
 // @Param Body body ` + moduleName + `Model.` + strings.Title(moduleName) + ` true "Body to update ` + strings.Title(moduleName) + `"
 // @Success 200
-// @Router /` + regex.StringToHyphen(moduleName) + `/{` + moduleName + `Id} [Put]
+// @Router /` + regex.ToKebabCase(moduleNotModify) + `/{` + regex.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id} [Put]
 func Update` + strings.Title(moduleName) + `(c *gin.Context) {
 	var ` + moduleName + ` ` + moduleName + `Model.` + strings.Title(moduleName) + `
 	if err := c.ShouldBindJSON(&` + moduleName + `); err != nil {
@@ -172,7 +172,7 @@ func Update` + strings.Title(moduleName) + `(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Success 200
-// @Router /` + regex.StringToHyphen(moduleName) + `/{` + moduleName + `Id} [Delete]
+// @Router /` + regex.ToKebabCase(moduleNotModify) + `/{` + regex.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id} [Delete]
 func Delete` + strings.Title(moduleName) + `(c *gin.Context) {
 	` + moduleName + `Id, err := strconv.Atoi(c.Param("` + moduleName + `Id"))
 	if err != nil {

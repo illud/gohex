@@ -66,6 +66,7 @@ func (m endpointModel) View() string {
 	return s.String()
 }
 
+// for new endpoint
 func Command(folders []string) {
 	endpointChoices = folders
 	var module string
@@ -81,7 +82,7 @@ func Command(folders []string) {
 	if m, ok := m.(endpointModel); ok && m.choice != "" {
 		if m.choice == m.choice {
 			module = m.choice
-			methods.Command(module)
+			methods.Command(module) // for new method
 		}
 	}
 }

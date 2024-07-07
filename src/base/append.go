@@ -11,7 +11,7 @@ import (
 )
 
 // ADD controller to router.go crud
-func AppendToRoutingCrud(moduleName string) {
+func AppendToRoutingCrud(moduleName string, moduleNotModify string) {
 	dir, err := os.Getwd()
 	if err != nil {
 		log.Fatal(err)
@@ -41,11 +41,11 @@ func AppendToRoutingCrud(moduleName string) {
 
 		if strings.Contains(line, "return router") {
 			lines[i] = ` //` + moduleName + `
-	router.POST("/` + regex.StringToHyphen(moduleName) + `", ` + moduleName + `Controller.Create` + strings.Title(moduleName) + `)
-	router.GET("/` + regex.StringToHyphen(moduleName) + `", ` + moduleName + `Controller.Get` + strings.Title(moduleName) + `)
-	router.GET("/` + regex.StringToHyphen(moduleName) + `/:` + moduleName + `Id", ` + moduleName + `Controller.GetOne` + strings.Title(moduleName) + `)
-	router.PUT("/` + regex.StringToHyphen(moduleName) + `/:` + moduleName + `Id", ` + moduleName + `Controller.Update` + strings.Title(moduleName) + `)
-	router.DELETE("/` + regex.StringToHyphen(moduleName) + `/:` + moduleName + `Id", ` + moduleName + `Controller.Delete` + strings.Title(moduleName) + `)
+	router.POST("/` + regex.ToKebabCase(moduleNotModify) + `", ` + moduleName + `Controller.Create` + strings.Title(moduleName) + `)
+	router.GET("/` + regex.ToKebabCase(moduleNotModify) + `", ` + moduleName + `Controller.Get` + strings.Title(moduleName) + `)
+	router.GET("/` + regex.ToKebabCase(moduleNotModify) + `/:` + regex.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id", ` + moduleName + `Controller.GetOne` + strings.Title(moduleName) + `)
+	router.PUT("/` + regex.ToKebabCase(moduleNotModify) + `/:` + regex.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id", ` + moduleName + `Controller.Update` + strings.Title(moduleName) + `)
+	router.DELETE("/` + regex.ToKebabCase(moduleNotModify) + `/:` + regex.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id", ` + moduleName + `Controller.Delete` + strings.Title(moduleName) + `)
 
 ` + lines[i] + ``
 		}
@@ -81,7 +81,7 @@ func AppendToRoutingCrud(moduleName string) {
 }
 
 // ADD controller to router.go simple
-func AppendToRoutingSimple(moduleName string) {
+func AppendToRoutingSimple(moduleName string, moduleNotModify string) {
 	dir, err := os.Getwd()
 	if err != nil {
 		log.Fatal(err)
@@ -111,7 +111,7 @@ func AppendToRoutingSimple(moduleName string) {
 
 		if strings.Contains(line, "return router") {
 			lines[i] = ` //` + moduleName + `
-	router.GET("/` + regex.StringToHyphen(moduleName) + `", ` + moduleName + `Controller.Get` + strings.Title(moduleName) + `)
+	router.GET("/` + regex.ToKebabCase(moduleNotModify) + `", ` + moduleName + `Controller.Get` + strings.Title(moduleName) + `)
 
 ` + lines[i] + ``
 		}

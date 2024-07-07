@@ -67,6 +67,7 @@ func (m methodsModel) View() string {
 	return s.String()
 }
 
+// for new method
 func Command(module string) {
 	p := tea.NewProgram(methodsModel{})
 
