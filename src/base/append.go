@@ -7,11 +7,18 @@ import (
 	"runtime"
 	"strings"
 
+	utils "github.com/illud/gohex/src/utils/append"
 	regex "github.com/illud/gohex/src/utils/regex"
 )
 
 // ADD controller to router.go crud
 func AppendToRoutingCrud(moduleName string, moduleNotModify string) {
+	// add data to tracker
+	err := utils.AddDataToTrackerFile(moduleName, regex.ToKebabCase(moduleNotModify))
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	dir, err := os.Getwd()
 	if err != nil {
 		log.Fatal(err)

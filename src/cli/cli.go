@@ -109,6 +109,10 @@ func Command() {
 			bar.Add(1)
 			time.Sleep(40 * time.Millisecond)
 
+			os.Create(folderName + "/tracker.json")
+			bar.Add(1)
+			time.Sleep(40 * time.Millisecond)
+
 			os.Create(folderName + "/main.go")
 			bar.Add(1)
 			time.Sleep(40 * time.Millisecond)

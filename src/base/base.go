@@ -5,6 +5,17 @@ import (
 )
 
 func BaseData(folderName string) {
+	//Add data to tracker.json
+	trackerString :=
+		`{
+  "modules": {
+    "moduleName": "tasks",
+    "endpointName": "tasks"
+  }
+}`
+	mainBytes := []byte(trackerString)
+	os.WriteFile(folderName+"/tracker.json", mainBytes, 0)
+
 	//Add data to main.go
 	mainString :=
 		`package main
@@ -44,7 +55,7 @@ func main() {
 
 	router.Router().Run(":" + port)
 }`
-	mainBytes := []byte(mainString)
+	mainBytes = []byte(mainString)
 	os.WriteFile(folderName+"/main.go", mainBytes, 0)
 
 	//Add data to router.go

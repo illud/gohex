@@ -52,6 +52,7 @@ func (m endpointModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 func (m endpointModel) View() string {
 	s := strings.Builder{}
 	s.WriteString("please select your module\n\n")
+	s.WriteString("please use hyphen-case when the module name consist of two or more words\n\n")
 
 	for i := 0; i < len(endpointChoices); i++ {
 		if m.cursor == i {

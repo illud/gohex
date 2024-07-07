@@ -6,12 +6,22 @@ import (
 	"strings"
 
 	append "github.com/illud/gohex/src/utils/append"
+	utils "github.com/illud/gohex/src/utils/append"
 	find "github.com/illud/gohex/src/utils/find"
 	regex "github.com/illud/gohex/src/utils/regex"
 	str "github.com/illud/gohex/src/utils/strings"
 )
 
 func PostMethod(moduleName string, methodName string) {
+	trackerResult := utils.ReadTrackerFile()
+	var endpointName string
+
+	for _, module := range trackerResult.Modules {
+		if module.ModuleName == moduleName {
+			endpointName = module.EndpointName
+			break
+		}
+	}
 
 	//Add data to controller.go
 	controllerString :=
@@ -26,15 +36,15 @@ func PostMethod(moduleName string, methodName string) {
 // @Produce json
 // @Param Body body ` + moduleName + `Model.` + strings.Title(moduleName) + ` true "Body to create ` + strings.Title(moduleName) + `"
 // @Success 200
-// @Router /` + regex.StringToHyphen(moduleName) + `/` + methodName + ` [Post]
-func ` + strings.Title(methodName) + `(c *gin.Context) {
+// @Router /` + endpointName + `/` + strings.ToLower(methodName) + ` [Post]
+func ` + strings.Title(regex.DashToCamel(methodName)) + `(c *gin.Context) {
 	var ` + moduleName + ` ` + moduleName + `Model.` + strings.Title(moduleName) + `
 	if err := c.ShouldBindJSON(&` + moduleName + `); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	err := service.` + strings.Title(methodName) + `(` + moduleName + `)
+	err := service.` + strings.Title(regex.DashToCamel(methodName)) + `(` + moduleName + `)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -55,8 +65,8 @@ func ` + strings.Title(methodName) + `(c *gin.Context) {
 	// 	//Add data to service.go
 	servicesString :=
 		`
-func (s *Service) ` + strings.Title(methodName) + `(` + moduleName + ` ` + moduleName + `Model.` + strings.Title(moduleName) + `) error {
-	err := s.` + moduleName + `Repository.` + strings.Title(methodName) + `(` + moduleName + `)
+func (s *Service) ` + strings.Title(regex.DashToCamel(methodName)) + `(` + moduleName + ` ` + moduleName + `Model.` + strings.Title(moduleName) + `) error {
+	err := s.` + moduleName + `Repository.` + strings.Title(regex.DashToCamel(methodName)) + `(` + moduleName + `)
 	if err != nil {
 		return err
 	}
@@ -71,7 +81,7 @@ func (s *Service) ` + strings.Title(methodName) + `(` + moduleName + ` ` + modul
 
 	// 	//Add data to module/infraestructure/module.db.go
 	repositoryInterfaceString :=
-		`	` + strings.Title(methodName) + `(` + moduleName + ` ` + moduleName + `Model.` + strings.Title(moduleName) + `)  error
+		`	` + strings.Title(regex.DashToCamel(methodName)) + `(` + moduleName + ` ` + moduleName + `Model.` + strings.Title(moduleName) + `)  error
 }`
 
 	repositoryResult, err := find.FindFile("app/" + moduleName + "/domain/repositories/")
@@ -86,7 +96,7 @@ func (s *Service) ` + strings.Title(methodName) + `(` + moduleName + ` ` + modul
 	// 	//Add data to module/infraestructure/module.db.go
 	infraestructureString :=
 		`
-func (` + str.GetFirstCharacterOfString(moduleName) + ` ` + strings.Title(moduleName) + `Db) ` + strings.Title(methodName) + `(` + moduleName + ` ` + moduleName + `Model.` + strings.Title(moduleName) + `) error {
+func (` + str.GetFirstCharacterOfString(moduleName) + ` ` + strings.Title(moduleName) + `Db) ` + strings.Title(regex.DashToCamel(methodName)) + `(` + moduleName + ` ` + moduleName + `Model.` + strings.Title(moduleName) + `) error {
 	// Implement your creation logic here
 	return  nil
 }
@@ -108,7 +118,7 @@ func (` + str.GetFirstCharacterOfString(moduleName) + ` ` + strings.Title(module
 	for i, line := range lines {
 		if strings.Contains(line, "//"+moduleName) {
 			lines[i] = `	//` + moduleName + ` 
-	router.POST("/` + moduleName + `/` + methodName + `", ` + moduleName + `Controller.` + strings.Title(methodName) + `)`
+	router.POST("/` + endpointName + `/` + strings.ToLower(methodName) + `", ` + moduleName + `Controller.` + strings.Title(regex.DashToCamel(methodName)) + `)`
 		}
 
 	}

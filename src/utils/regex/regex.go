@@ -60,3 +60,47 @@ func FormatSnakeCaseToCamelCase(input string) string {
 
 	return result
 }
+
+// remove - from string (eg. my-variable-name -> MyVariableName)
+func DashToCamel(input string) string {
+	words := strings.Split(input, "-")
+	for i := 0; i < len(words); i++ {
+		words[i] = capitalizeFirstLetter(words[i])
+	}
+	return strings.Join(words, "")
+}
+
+func capitalizeFirstLetter(word string) string {
+	if len(word) == 0 {
+		return ""
+	}
+	r := []rune(word)
+	r[0] = unicode.ToUpper(r[0])
+	return string(r)
+}
+
+// Format hyphen to camelCase (eg. my-variable-name -> myVariableName)
+func FormatHyphenToCamelCase(input string) string {
+	// Split by underscore
+	parts := strings.Split(input, "-")
+
+	// Process each part
+	var formattedParts []string
+	for i, part := range parts {
+		if i == 0 {
+			// Leave the first part as is
+			formattedParts = append(formattedParts, part)
+		} else {
+			// Convert subsequent parts to lowercase and uppercase the first letter
+			if len(part) > 0 {
+				formattedPart := strings.Title(strings.ToLower(part))
+				formattedParts = append(formattedParts, formattedPart)
+			}
+		}
+	}
+
+	// Join parts with no underscore
+	result := strings.Join(formattedParts, "")
+
+	return result
+}

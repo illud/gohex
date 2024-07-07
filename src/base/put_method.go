@@ -6,12 +6,22 @@ import (
 	"strings"
 
 	append "github.com/illud/gohex/src/utils/append"
+	utils "github.com/illud/gohex/src/utils/append"
 	find "github.com/illud/gohex/src/utils/find"
 	regex "github.com/illud/gohex/src/utils/regex"
 	str "github.com/illud/gohex/src/utils/strings"
 )
 
 func PutMethod(moduleName string, methodName string) {
+	trackerResult := utils.ReadTrackerFile()
+	var endpointName string
+
+	for _, module := range trackerResult.Modules {
+		if module.ModuleName == moduleName {
+			endpointName = module.EndpointName
+			break
+		}
+	}
 
 	//Add data to controller.go
 	controllerString :=
@@ -22,26 +32,26 @@ func PutMethod(moduleName string, methodName string) {
 // @Description Put ` + strings.Title(moduleName) + `
 // @Tags ` + strings.Title(moduleName) + `
 // @Security BearerAuth
-// @Param ` + moduleName + `Id path int true "` + strings.Title(moduleName) + `Id"
+// @Param ` + regex.FormatHyphenToCamelCase(endpointName) + `Id path int true "` + regex.FormatHyphenToCamelCase(endpointName) + `Id"
 // @Accept json
 // @Produce json
 // @Param Body body ` + moduleName + `Model.` + strings.Title(moduleName) + ` true "Body to update ` + strings.Title(moduleName) + `"
 // @Success 200
-// @Router /` + regex.StringToHyphen(moduleName) + `/` + methodName + `/{` + moduleName + `Id} [Put]
-func ` + strings.Title(methodName) + `(c *gin.Context) {
+// @Router /` + endpointName + `/` + strings.ToLower(methodName) + `/{` + regex.FormatHyphenToCamelCase(endpointName) + `Id} [Put]
+func ` + strings.Title(regex.DashToCamel(methodName)) + `(c *gin.Context) {
 	var ` + moduleName + ` ` + moduleName + `Model.` + strings.Title(moduleName) + `
 	if err := c.ShouldBindJSON(&` + moduleName + `); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	` + moduleName + `Id, err := strconv.Atoi(c.Param("` + moduleName + `Id"))
+	` + regex.FormatHyphenToCamelCase(endpointName) + `Id, err := strconv.Atoi(c.Param("` + regex.FormatHyphenToCamelCase(endpointName) + `Id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	err = service.` + strings.Title(methodName) + `(` + moduleName + `Id)
+	err = service.` + strings.Title(regex.DashToCamel(methodName)) + `(` + regex.FormatHyphenToCamelCase(endpointName) + `Id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -62,8 +72,8 @@ func ` + strings.Title(methodName) + `(c *gin.Context) {
 	// 	//Add data to service.go
 	servicesString :=
 		`
-func (s *Service) ` + strings.Title(methodName) + `(` + moduleName + `Id int) error {
-	err := s.` + moduleName + `Repository.` + strings.Title(methodName) + `(` + moduleName + `Id)
+func (s *Service) ` + strings.Title(regex.DashToCamel(methodName)) + `(` + regex.FormatHyphenToCamelCase(endpointName) + `Id int) error {
+	err := s.` + moduleName + `Repository.` + strings.Title(regex.DashToCamel(methodName)) + `(` + regex.FormatHyphenToCamelCase(endpointName) + `Id)
 	if err != nil {
 		return err
 	}
@@ -78,7 +88,7 @@ func (s *Service) ` + strings.Title(methodName) + `(` + moduleName + `Id int) er
 
 	// 	//Add data to module/infraestructure/module.db.go
 	repositoryInterfaceString :=
-		`	` + strings.Title(methodName) + `(` + moduleName + `Id int) error
+		`	` + strings.Title(regex.DashToCamel(methodName)) + `(` + regex.FormatHyphenToCamelCase(endpointName) + `Id int) error
 }`
 
 	repositoryResult, err := find.FindFile("app/" + moduleName + "/domain/repositories/")
@@ -93,7 +103,7 @@ func (s *Service) ` + strings.Title(methodName) + `(` + moduleName + `Id int) er
 	// 	//Add data to module/infraestructure/module.db.go
 	infraestructureString :=
 		`
-func (` + str.GetFirstCharacterOfString(moduleName) + ` *` + strings.Title(moduleName) + `Db) ` + strings.Title(methodName) + `(` + moduleName + `Id int) error {
+func (` + str.GetFirstCharacterOfString(moduleName) + ` *` + strings.Title(moduleName) + `Db) ` + strings.Title(regex.DashToCamel(methodName)) + `(` + regex.FormatHyphenToCamelCase(endpointName) + `Id int) error {
 	// Implement your update logic here
 	return nil
 }
@@ -115,7 +125,7 @@ func (` + str.GetFirstCharacterOfString(moduleName) + ` *` + strings.Title(modul
 	for i, line := range lines {
 		if strings.Contains(line, "//"+moduleName) {
 			lines[i] = `	//` + moduleName + ` 
-	router.PUT("/` + moduleName + `/` + methodName + `/` + moduleName + `Id", ` + moduleName + `Controller.` + strings.Title(methodName) + `)`
+	router.PUT("/` + endpointName + `/` + strings.ToLower(methodName) + `/` + regex.FormatHyphenToCamelCase(endpointName) + `Id", ` + moduleName + `Controller.` + strings.Title(regex.DashToCamel(methodName)) + `)`
 		}
 
 	}

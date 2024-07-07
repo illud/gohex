@@ -2,7 +2,10 @@ package append
 
 import (
 	"bufio"
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"log"
 	"os"
 	"strings"
 )
@@ -54,4 +57,67 @@ func ReplaceLastCharacter(filename string, oldChar, newChar string) error {
 	}
 
 	return nil
+}
+
+type Tracker struct {
+	Modules []struct {
+		ModuleName   string `json:"moduleName"`
+		EndpointName string `json:"endpointName"`
+	} `json:"modules"`
+}
+
+func AddDataToTrackerFile(moduleName string, endpointName string) error {
+	// Read JSON file
+	filePath := "tracker.json"
+	data, err := ioutil.ReadFile(filePath)
+	if err != nil {
+		log.Fatalf("Error reading file: %v", err)
+	}
+
+	// Unmarshal JSON into struct
+	var tr Tracker
+	if err := json.Unmarshal(data, &tr); err != nil {
+		log.Fatalf("Error unmarshalling JSON: %v", err)
+	}
+
+	// Add new data to the array
+	newData := struct {
+		ModuleName   string `json:"moduleName"`
+		EndpointName string `json:"endpointName"`
+	}{
+		ModuleName:   moduleName,
+		EndpointName: endpointName,
+	}
+	tr.Modules = append(tr.Modules, newData)
+
+	// Marshal struct back to JSON
+	newDataJSON, err := json.MarshalIndent(tr, "", "  ")
+	if err != nil {
+		log.Fatalf("Error marshalling JSON: %v", err)
+	}
+
+	// Write JSON to file
+	err = ioutil.WriteFile(filePath, newDataJSON, os.ModePerm)
+	if err != nil {
+		log.Fatalf("Error writing to file: %v", err)
+	}
+
+	return nil
+}
+
+func ReadTrackerFile() Tracker {
+	// Read JSON file
+	filePath := "tracker.json"
+	data, err := ioutil.ReadFile(filePath)
+	if err != nil {
+		log.Fatalf("Error reading file: %v", err)
+	}
+
+	// Unmarshal JSON into struct
+	var tr Tracker
+	if err := json.Unmarshal(data, &tr); err != nil {
+		log.Fatalf("Error unmarshalling JSON: %v", err)
+	}
+
+	return tr
 }
