@@ -125,7 +125,7 @@ func (` + str.GetFirstCharacterOfString(moduleName) + ` *` + strings.Title(modul
 	for i, line := range lines {
 		if strings.Contains(line, "//"+moduleName) {
 			lines[i] = `	//` + moduleName + ` 
-	router.PUT("/` + endpointName + `/` + strings.ToLower(methodName) + `/` + regex.FormatHyphenToCamelCase(endpointName) + `Id", ` + moduleName + `Controller.` + strings.Title(regex.DashToCamel(methodName)) + `)`
+	router.PUT("/` + endpointName + `/` + strings.ToLower(methodName) + `/:` + regex.FormatHyphenToCamelCase(endpointName) + `Id", ` + moduleName + `Controller.` + strings.Title(regex.DashToCamel(methodName)) + `)`
 		}
 
 	}

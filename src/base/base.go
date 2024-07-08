@@ -8,10 +8,10 @@ func BaseData(folderName string) {
 	//Add data to tracker.json
 	trackerString :=
 		`{
-  "modules": {
+  "modules": [{
     "moduleName": "tasks",
     "endpointName": "tasks"
-  }
+  }]
 }`
 	mainBytes := []byte(trackerString)
 	os.WriteFile(folderName+"/tracker.json", mainBytes, 0)
