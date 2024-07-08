@@ -230,6 +230,7 @@ Folder Structure:
 │   go.sum
 │   main.go
 │   README
+│   tracker.json
 │
 ├───adapters
 │   ├───bcrypt
@@ -257,7 +258,7 @@ Folder Structure:
 │       │           tasks.service.go
 │       │
 │       └───infraestructure
-│               tasks.db.go
+│                   tasks.db.go
 │
 ├───docs
 │       docs.go
@@ -280,7 +281,7 @@ Folder Structure:
 ```
 
 ## Todo
-- Add correct endpoint name when generating a new method
+- Fix module selection for bubbletea package(this bugs the names printed in terminal and make them transparent)
 
 ## License
 
