@@ -56,7 +56,7 @@ var service = ` + moduleName + `Services.NewService(` + moduleName + `Db)
 // @Produce json
 // @Param Body body ` + moduleName + `Model.` + strings.Title(moduleName) + ` true "Body to create ` + strings.Title(moduleName) + `"
 // @Success 200
-// @Router /` + regex.ToKebabCase(moduleNotModify) + ` [Post]
+// @Router /` + str.ToKebabCase(moduleNotModify) + ` [Post]
 func Create` + strings.Title(moduleName) + `(c *gin.Context) {
 	var ` + moduleName + ` ` + moduleName + `Model.` + strings.Title(moduleName) + `
 	if err := c.ShouldBindJSON(&` + moduleName + `); err != nil {
@@ -84,7 +84,7 @@ func Create` + strings.Title(moduleName) + `(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Success 200
-// @Router /` + regex.ToKebabCase(moduleNotModify) + ` [Get]
+// @Router /` + str.ToKebabCase(moduleNotModify) + ` [Get]
 func Get` + strings.Title(moduleName) + `(c *gin.Context) {
 	result, err := service.Get` + strings.Title(moduleName) + `()
 	if err != nil {
@@ -103,19 +103,19 @@ func Get` + strings.Title(moduleName) + `(c *gin.Context) {
 // @Description Get ` + strings.Title(moduleName) + `
 // @Tags ` + strings.Title(moduleName) + `
 // @Security BearerAuth
-// @Param ` + regex.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id path int true "` + regex.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id"
+// @Param ` + str.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id path int true "` + str.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id"
 // @Accept json
 // @Produce json
 // @Success 200
-// @Router /` + regex.ToKebabCase(moduleNotModify) + `/{` + regex.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id} [Get]
+// @Router /` + str.ToKebabCase(moduleNotModify) + `/{` + str.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id} [Get]
 func GetOne` + strings.Title(moduleName) + `(c *gin.Context) {
-	` + regex.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id, err := strconv.Atoi(c.Param("` + regex.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id"))
+	` + str.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id, err := strconv.Atoi(c.Param("` + str.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	result, err := service.GetOne` + strings.Title(moduleName) + `(` + regex.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id)
+	result, err := service.GetOne` + strings.Title(moduleName) + `(` + str.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -132,12 +132,12 @@ func GetOne` + strings.Title(moduleName) + `(c *gin.Context) {
 // @Description Put ` + strings.Title(moduleName) + `
 // @Tags ` + strings.Title(moduleName) + `
 // @Security BearerAuth
-// @Param ` + regex.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id path int true "` + regex.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id"
+// @Param ` + str.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id path int true "` + str.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id"
 // @Accept json
 // @Produce json
 // @Param Body body ` + moduleName + `Model.` + strings.Title(moduleName) + ` true "Body to update ` + strings.Title(moduleName) + `"
 // @Success 200
-// @Router /` + regex.ToKebabCase(moduleNotModify) + `/{` + regex.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id} [Put]
+// @Router /` + str.ToKebabCase(moduleNotModify) + `/{` + str.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id} [Put]
 func Update` + strings.Title(moduleName) + `(c *gin.Context) {
 	var ` + moduleName + ` ` + moduleName + `Model.` + strings.Title(moduleName) + `
 	if err := c.ShouldBindJSON(&` + moduleName + `); err != nil {
@@ -145,13 +145,13 @@ func Update` + strings.Title(moduleName) + `(c *gin.Context) {
 		return
 	}
 
-	` + regex.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id, err := strconv.Atoi(c.Param("` + regex.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id"))
+	` + str.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id, err := strconv.Atoi(c.Param("` + str.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	 err = service.Update` + strings.Title(moduleName) + `(` + regex.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id)
+	 err = service.Update` + strings.Title(moduleName) + `(` + str.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -168,19 +168,19 @@ func Update` + strings.Title(moduleName) + `(c *gin.Context) {
 // @Description Delete ` + strings.Title(moduleName) + `
 // @Tags ` + strings.Title(moduleName) + `
 // @Security BearerAuth
-// @Param ` + regex.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id path int true "` + regex.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id"
+// @Param ` + str.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id path int true "` + str.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id"
 // @Accept json
 // @Produce json
 // @Success 200
-// @Router /` + regex.ToKebabCase(moduleNotModify) + `/{` + regex.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id} [Delete]
+// @Router /` + str.ToKebabCase(moduleNotModify) + `/{` + str.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id} [Delete]
 func Delete` + strings.Title(moduleName) + `(c *gin.Context) {
-	` + regex.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id, err := strconv.Atoi(c.Param("` + regex.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id"))
+	` + str.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id, err := strconv.Atoi(c.Param("` + str.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	err = service.Delete` + strings.Title(moduleName) + `(` + regex.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id)
+	err = service.Delete` + strings.Title(moduleName) + `(` + str.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -239,24 +239,24 @@ func (s *Service) Get` + strings.Title(moduleName) + `() ([]` + moduleName + `Mo
 	return result, nil
 }
 
-func (s *Service) GetOne` + strings.Title(moduleName) + `(` + regex.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id int) (` + moduleName + `Model.` + strings.Title(moduleName) + `, error) {
-	result, err := s.` + moduleName + `Repository.GetOne` + strings.Title(moduleName) + `(` + regex.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id)
+func (s *Service) GetOne` + strings.Title(moduleName) + `(` + str.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id int) (` + moduleName + `Model.` + strings.Title(moduleName) + `, error) {
+	result, err := s.` + moduleName + `Repository.GetOne` + strings.Title(moduleName) + `(` + str.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id)
 	if err != nil {
 		return ` + moduleName + `Model.` + strings.Title(moduleName) + `{} , err
 	}
 	return result, nil
 }
 
-func (s *Service) Update` + strings.Title(moduleName) + `(` + regex.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id int) error {
-	err := s.` + moduleName + `Repository.Update` + strings.Title(moduleName) + `(` + regex.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id)
+func (s *Service) Update` + strings.Title(moduleName) + `(` + str.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id int) error {
+	err := s.` + moduleName + `Repository.Update` + strings.Title(moduleName) + `(` + str.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (s *Service) Delete` + strings.Title(moduleName) + `(` + regex.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id int) error {
-	err := s.` + moduleName + `Repository.Delete` + strings.Title(moduleName) + `(` + regex.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id)
+func (s *Service) Delete` + strings.Title(moduleName) + `(` + str.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id int) error {
+	err := s.` + moduleName + `Repository.Delete` + strings.Title(moduleName) + `(` + str.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id)
 	if err != nil {
 		return err
 	}
@@ -276,9 +276,9 @@ import (
 type I` + strings.Title(moduleName) + ` interface {
 	Create` + strings.Title(moduleName) + `(` + moduleName + ` ` + moduleName + `Model.` + strings.Title(moduleName) + `) error
 	Get` + strings.Title(moduleName) + `() ([]` + moduleName + `Model.` + strings.Title(moduleName) + `, error)
-	GetOne` + strings.Title(moduleName) + `(` + regex.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id int) (` + moduleName + `Model.` + strings.Title(moduleName) + `, error)
-	Update` + strings.Title(moduleName) + `(` + regex.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id int) error
-	Delete` + strings.Title(moduleName) + `(` + regex.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id int) error
+	GetOne` + strings.Title(moduleName) + `(` + str.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id int) (` + moduleName + `Model.` + strings.Title(moduleName) + `, error)
+	Update` + strings.Title(moduleName) + `(` + str.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id int) error
+	Delete` + strings.Title(moduleName) + `(` + str.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id int) error
 }`
 	repositoryInterfaceBytes := []byte(repositoryInterfaceString)
 	os.WriteFile("app/"+moduleName+"/domain/repositories/"+moduleNameSnakeCase+".repository.go", repositoryInterfaceBytes, 0)
@@ -316,17 +316,17 @@ func (` + str.GetFirstCharacterOfString(moduleName) + ` *` + strings.Title(modul
 	return ` + moduleName + `, nil
 }
 
-func (` + str.GetFirstCharacterOfString(moduleName) + ` *` + strings.Title(moduleName) + `Db) GetOne` + strings.Title(moduleName) + `(` + regex.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id int) (` + moduleName + `Model.` + strings.Title(moduleName) + `, error) {
+func (` + str.GetFirstCharacterOfString(moduleName) + ` *` + strings.Title(moduleName) + `Db) GetOne` + strings.Title(moduleName) + `(` + str.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id int) (` + moduleName + `Model.` + strings.Title(moduleName) + `, error) {
 	// Implement your single retrieval logic here
-	return ` + moduleName + `Model.` + strings.Title(moduleName) + `{Id: ` + regex.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id}, nil
+	return ` + moduleName + `Model.` + strings.Title(moduleName) + `{Id: ` + str.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id}, nil
 }
 
-func (` + str.GetFirstCharacterOfString(moduleName) + ` ` + strings.Title(moduleName) + `Db) Update` + strings.Title(moduleName) + `(` + regex.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id int)  error {
+func (` + str.GetFirstCharacterOfString(moduleName) + ` ` + strings.Title(moduleName) + `Db) Update` + strings.Title(moduleName) + `(` + str.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id int)  error {
 	// Implement your update logic here
 	return nil
 }
 
-func (` + str.GetFirstCharacterOfString(moduleName) + ` ` + strings.Title(moduleName) + `Db) Delete` + strings.Title(moduleName) + `(` + regex.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id int) error {
+func (` + str.GetFirstCharacterOfString(moduleName) + ` ` + strings.Title(moduleName) + `Db) Delete` + strings.Title(moduleName) + `(` + str.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id int) error {
 	// Implement your deletion logic here
 	return nil
 }`

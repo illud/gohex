@@ -8,7 +8,6 @@ import (
 	append "github.com/illud/gohex/src/utils/append"
 	utils "github.com/illud/gohex/src/utils/append"
 	find "github.com/illud/gohex/src/utils/find"
-	regex "github.com/illud/gohex/src/utils/regex"
 	str "github.com/illud/gohex/src/utils/strings"
 )
 
@@ -32,19 +31,19 @@ func DeleteMethod(moduleName string, methodName string) {
 // @Description Delete ` + strings.Title(moduleName) + `
 // @Tags ` + strings.Title(moduleName) + `
 // @Security BearerAuth
-// @Param ` + regex.FormatHyphenToCamelCase(endpointName) + `Id path int true "` + regex.FormatHyphenToCamelCase(endpointName) + `Id"
+// @Param ` + str.FormatHyphenToCamelCase(endpointName) + `Id path int true "` + str.FormatHyphenToCamelCase(endpointName) + `Id"
 // @Accept json
 // @Produce json
 // @Success 200
-// @Router /` + endpointName + `/` + strings.ToLower(methodName) + `/{` + regex.FormatHyphenToCamelCase(endpointName) + `Id} [Delete]
-func ` + strings.Title(regex.DashToCamel(methodName)) + `(c *gin.Context) {
-	` + regex.FormatHyphenToCamelCase(endpointName) + `Id, err := strconv.Atoi(c.Param("` + regex.FormatHyphenToCamelCase(endpointName) + `Id"))
+// @Router /` + endpointName + `/` + strings.ToLower(methodName) + `/{` + str.FormatHyphenToCamelCase(endpointName) + `Id} [Delete]
+func ` + strings.Title(str.DashToCamel(methodName)) + `(c *gin.Context) {
+	` + str.FormatHyphenToCamelCase(endpointName) + `Id, err := strconv.Atoi(c.Param("` + str.FormatHyphenToCamelCase(endpointName) + `Id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	err = service.` + strings.Title(regex.DashToCamel(methodName)) + `(` + regex.FormatHyphenToCamelCase(endpointName) + `Id)
+	err = service.` + strings.Title(str.DashToCamel(methodName)) + `(` + str.FormatHyphenToCamelCase(endpointName) + `Id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -65,8 +64,8 @@ func ` + strings.Title(regex.DashToCamel(methodName)) + `(c *gin.Context) {
 	// 	//Add data to service.go
 	servicesString :=
 		`
-func (s *Service) ` + strings.Title(regex.DashToCamel(methodName)) + `(` + regex.FormatHyphenToCamelCase(endpointName) + `Id int) error {
-	err := s.` + moduleName + `Repository.` + strings.Title(regex.DashToCamel(methodName)) + `(` + regex.FormatHyphenToCamelCase(endpointName) + `Id)
+func (s *Service) ` + strings.Title(str.DashToCamel(methodName)) + `(` + str.FormatHyphenToCamelCase(endpointName) + `Id int) error {
+	err := s.` + moduleName + `Repository.` + strings.Title(str.DashToCamel(methodName)) + `(` + str.FormatHyphenToCamelCase(endpointName) + `Id)
 	if err != nil {
 		return err
 	}
@@ -81,7 +80,7 @@ func (s *Service) ` + strings.Title(regex.DashToCamel(methodName)) + `(` + regex
 
 	// 	//Add data to module/infraestructure/module.db.go
 	repositoryInterfaceString :=
-		`	` + strings.Title(regex.DashToCamel(methodName)) + `(` + regex.FormatHyphenToCamelCase(endpointName) + `Id int) error
+		`	` + strings.Title(str.DashToCamel(methodName)) + `(` + str.FormatHyphenToCamelCase(endpointName) + `Id int) error
 }`
 
 	repositoryResult, err := find.FindFile("app/" + moduleName + "/domain/repositories/")
@@ -96,7 +95,7 @@ func (s *Service) ` + strings.Title(regex.DashToCamel(methodName)) + `(` + regex
 	// 	//Add data to module/infraestructure/module.db.go
 	infraestructureString :=
 		`
-func (` + str.GetFirstCharacterOfString(moduleName) + ` *` + strings.Title(moduleName) + `Db) ` + strings.Title(regex.DashToCamel(methodName)) + `(` + regex.FormatHyphenToCamelCase(endpointName) + `Id int) error {
+func (` + str.GetFirstCharacterOfString(moduleName) + ` *` + strings.Title(moduleName) + `Db) ` + strings.Title(str.DashToCamel(methodName)) + `(` + str.FormatHyphenToCamelCase(endpointName) + `Id int) error {
 	// Implement your deletion logic here
 	return  nil
 }
@@ -118,7 +117,7 @@ func (` + str.GetFirstCharacterOfString(moduleName) + ` *` + strings.Title(modul
 	for i, line := range lines {
 		if strings.Contains(line, "//"+moduleName) {
 			lines[i] = `	//` + moduleName + ` 
-	router.DELETE("/` + endpointName + `/` + strings.ToLower(methodName) + `/:` + regex.FormatHyphenToCamelCase(endpointName) + `Id", ` + moduleName + `Controller.` + strings.Title(regex.DashToCamel(methodName)) + `)`
+	router.DELETE("/` + endpointName + `/` + strings.ToLower(methodName) + `/:` + str.FormatHyphenToCamelCase(endpointName) + `Id", ` + moduleName + `Controller.` + strings.Title(str.DashToCamel(methodName)) + `)`
 		}
 
 	}

@@ -8,7 +8,6 @@ import (
 	append "github.com/illud/gohex/src/utils/append"
 	utils "github.com/illud/gohex/src/utils/append"
 	find "github.com/illud/gohex/src/utils/find"
-	regex "github.com/illud/gohex/src/utils/regex"
 	str "github.com/illud/gohex/src/utils/strings"
 )
 
@@ -36,8 +35,8 @@ func GetMethod(moduleName string, methodName string) {
 // @Produce json
 // @Success 200
 // @Router /` + endpointName + `/` + strings.ToLower(methodName) + ` [Get]
-func ` + strings.Title(regex.DashToCamel(methodName)) + `(c *gin.Context) {
-	result, err := service.` + strings.Title(regex.DashToCamel(methodName)) + `()
+func ` + strings.Title(str.DashToCamel(methodName)) + `(c *gin.Context) {
+	result, err := service.` + strings.Title(str.DashToCamel(methodName)) + `()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -58,8 +57,8 @@ func ` + strings.Title(regex.DashToCamel(methodName)) + `(c *gin.Context) {
 	// 	//Add data to service.go
 	servicesString :=
 		`
-func (s *Service) ` + strings.Title(regex.DashToCamel(methodName)) + `() ([]` + moduleName + `Model.` + strings.Title(moduleName) + `, error) {
-	result, err := s.` + moduleName + `Repository.` + strings.Title(regex.DashToCamel(methodName)) + `()
+func (s *Service) ` + strings.Title(str.DashToCamel(methodName)) + `() ([]` + moduleName + `Model.` + strings.Title(moduleName) + `, error) {
+	result, err := s.` + moduleName + `Repository.` + strings.Title(str.DashToCamel(methodName)) + `()
 	if err != nil {
 		return nil, err
 	}
@@ -73,7 +72,7 @@ func (s *Service) ` + strings.Title(regex.DashToCamel(methodName)) + `() ([]` + 
 
 	// 	//Add data to module/infraestructure/module.db.go
 	repositoryInterfaceString :=
-		`	` + strings.Title(regex.DashToCamel(methodName)) + `() ([]` + moduleName + `Model.` + strings.Title(moduleName) + `, error)
+		`	` + strings.Title(str.DashToCamel(methodName)) + `() ([]` + moduleName + `Model.` + strings.Title(moduleName) + `, error)
 }`
 
 	repositoryResult, err := find.FindFile("app/" + moduleName + "/domain/repositories/")
@@ -88,7 +87,7 @@ func (s *Service) ` + strings.Title(regex.DashToCamel(methodName)) + `() ([]` + 
 	// 	//Add data to module/infraestructure/module.db.go
 	infraestructureString :=
 		`
-func (` + str.GetFirstCharacterOfString(moduleName) + ` ` + strings.Title(moduleName) + `Db) ` + strings.Title(regex.DashToCamel(methodName)) + `() ([]` + moduleName + `Model.` + strings.Title(moduleName) + `, error) {
+func (` + str.GetFirstCharacterOfString(moduleName) + ` ` + strings.Title(moduleName) + `Db) ` + strings.Title(str.DashToCamel(methodName)) + `() ([]` + moduleName + `Model.` + strings.Title(moduleName) + `, error) {
 	// Implement your retrieval logic here
 	var ` + moduleName + ` []` + moduleName + `Model.` + strings.Title(moduleName) + `
 	` + moduleName + ` = append(` + moduleName + `, ` + moduleName + `Model.` + strings.Title(moduleName) + `{Id: 1})
@@ -111,7 +110,7 @@ func (` + str.GetFirstCharacterOfString(moduleName) + ` ` + strings.Title(module
 	for i, line := range lines {
 		if strings.Contains(line, "//"+moduleName) {
 			lines[i] = `	//` + moduleName + ` 
-	router.GET("/` + endpointName + `/` + strings.ToLower(methodName) + `", ` + moduleName + `Controller.` + strings.Title(regex.DashToCamel(methodName)) + `)`
+	router.GET("/` + endpointName + `/` + strings.ToLower(methodName) + `", ` + moduleName + `Controller.` + strings.Title(str.DashToCamel(methodName)) + `)`
 		}
 
 	}

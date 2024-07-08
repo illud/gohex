@@ -8,13 +8,13 @@ import (
 	"strings"
 
 	utils "github.com/illud/gohex/src/utils/append"
-	regex "github.com/illud/gohex/src/utils/regex"
+	str "github.com/illud/gohex/src/utils/strings"
 )
 
 // ADD controller to router.go crud
 func AppendToRoutingCrud(moduleName string, moduleNotModify string) {
 	// add data to tracker
-	err := utils.AddDataToTrackerFile(moduleName, regex.ToKebabCase(moduleNotModify))
+	err := utils.AddDataToTrackerFile(moduleName, str.ToKebabCase(moduleNotModify))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -48,11 +48,11 @@ func AppendToRoutingCrud(moduleName string, moduleNotModify string) {
 
 		if strings.Contains(line, "return router") {
 			lines[i] = ` //` + moduleName + `
-	router.POST("/` + regex.ToKebabCase(moduleNotModify) + `", ` + moduleName + `Controller.Create` + strings.Title(moduleName) + `)
-	router.GET("/` + regex.ToKebabCase(moduleNotModify) + `", ` + moduleName + `Controller.Get` + strings.Title(moduleName) + `)
-	router.GET("/` + regex.ToKebabCase(moduleNotModify) + `/:` + regex.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id", ` + moduleName + `Controller.GetOne` + strings.Title(moduleName) + `)
-	router.PUT("/` + regex.ToKebabCase(moduleNotModify) + `/:` + regex.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id", ` + moduleName + `Controller.Update` + strings.Title(moduleName) + `)
-	router.DELETE("/` + regex.ToKebabCase(moduleNotModify) + `/:` + regex.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id", ` + moduleName + `Controller.Delete` + strings.Title(moduleName) + `)
+	router.POST("/` + str.ToKebabCase(moduleNotModify) + `", ` + moduleName + `Controller.Create` + strings.Title(moduleName) + `)
+	router.GET("/` + str.ToKebabCase(moduleNotModify) + `", ` + moduleName + `Controller.Get` + strings.Title(moduleName) + `)
+	router.GET("/` + str.ToKebabCase(moduleNotModify) + `/:` + str.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id", ` + moduleName + `Controller.GetOne` + strings.Title(moduleName) + `)
+	router.PUT("/` + str.ToKebabCase(moduleNotModify) + `/:` + str.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id", ` + moduleName + `Controller.Update` + strings.Title(moduleName) + `)
+	router.DELETE("/` + str.ToKebabCase(moduleNotModify) + `/:` + str.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id", ` + moduleName + `Controller.Delete` + strings.Title(moduleName) + `)
 
 ` + lines[i] + ``
 		}
@@ -118,7 +118,7 @@ func AppendToRoutingSimple(moduleName string, moduleNotModify string) {
 
 		if strings.Contains(line, "return router") {
 			lines[i] = ` //` + moduleName + `
-	router.GET("/` + regex.ToKebabCase(moduleNotModify) + `", ` + moduleName + `Controller.Get` + strings.Title(moduleName) + `)
+	router.GET("/` + str.ToKebabCase(moduleNotModify) + `", ` + moduleName + `Controller.Get` + strings.Title(moduleName) + `)
 
 ` + lines[i] + ``
 		}
