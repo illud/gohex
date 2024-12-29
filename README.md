@@ -281,7 +281,6 @@ Folder Structure:
 ```
 
 ## Todo
-- Fix module selection for bubbletea package(this bugs the names printed in terminal and make them transparent)
 
 ## License
 
