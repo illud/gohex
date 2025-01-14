@@ -400,9 +400,8 @@ func TestGet` + strings.Title(moduleName) + `(t *testing.T) {
 	expected := ` + "`" + `{"data":[{"Id":1}]}` + "`" + ` // Your expected data inside backquote 
 	expectedStatus := "200 OK"
 
-	assert.Contains(t, w.Body.String(), expected, "🔴 Expected %v 🔴 got %v", expected, w.Body.String())
-	assert.Contains(t, w.Result().Status, expectedStatus, "🔴 Expected %v 🔴 got %v", expectedStatus, w.Result().Status)
-	fmt.Println("🟢")
+	assert.Contains(t, w.Body.String(), expected, "Expected %v got %v", expected, w.Body.String())
+	assert.Contains(t, w.Result().Status, expectedStatus, "Expected %v got %v", expectedStatus, w.Result().Status)
 }`
 	//Add data to e2e
 	testBytes := []byte(testString)

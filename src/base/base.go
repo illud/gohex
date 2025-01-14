@@ -783,9 +783,8 @@ func TestGetTasks(t *testing.T) {
 	expected := ` + "`" + `{"data":[{"ID":0,"CreatedAt":"0001-01-01T00:00:00Z","UpdatedAt":"0001-01-01T00:00:00Z","DeletedAt":null,"Id":1,"Title":"Hello","Description":"World"}]}` + "`" + ` // Your expected data inside backquote
 	expectedStatus := "200 OK"
 
-	assert.Contains(t, w.Body.String(), expected, "🔴 Expected %v 🔴 got %v", expected, w.Body.String())
-	assert.Contains(t, w.Result().Status, expectedStatus, "🔴 Expected %v 🔴 got %v", expectedStatus, w.Result().Status)
-	fmt.Println("🟢")
+	assert.Contains(t, w.Body.String(), expected, "Expected %v got %v", expected, w.Body.String())
+	assert.Contains(t, w.Result().Status, expectedStatus, "Expected %v got %v", expectedStatus, w.Result().Status)
 }`
 
 	tasksTestBytes := []byte(tasksTestString)
