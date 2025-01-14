@@ -11,12 +11,11 @@ import (
 )
 
 func BaseModuleCrud(moduleName string, moduleNameSnakeCase string, moduleNotModify string) {
-
 	dir, err := os.Getwd()
 	if err != nil {
 		log.Fatal(err)
 	}
-	// fmt.Println(dir)
+
 	var ss []string
 	if runtime.GOOS == "windows" {
 		ss = strings.Split(dir, "\\")
@@ -340,15 +339,15 @@ func (` + str.GetFirstCharacterOfString(moduleName) + ` ` + strings.Title(module
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	router "github.com/` + currentDirName + `/router"
 	token "github.com/` + currentDirName + `/adapters/jwt"
-
+	` + moduleName + `Model "github.com/` + currentDirName + `/app/` + moduleName + `/domain/models"
 	/*
 		- Uncomment this when you are testing real data coming from database.
 		db "github.com/app/` + currentDirName + `/infraestructure"
@@ -397,11 +396,19 @@ func TestGet` + strings.Title(moduleName) + `(t *testing.T) {
 
 	router.ServeHTTP(w, req) 
 
-	expected := ` + "`" + `{"data":[{"Id":1}]}` + "`" + ` // Your expected data inside backquote 
-	expectedStatus := "200 OK"
+	// Deserialize response body
+	var responseData struct {
+		Data []` + moduleName + `Model.` + strings.Title(moduleName) + `
+	}
+	err := json.Unmarshal(w.Body.Bytes(), &responseData)
+	require.NoError(t, err)
 
-	assert.Contains(t, w.Body.String(), expected, "Expected %v got %v", expected, w.Body.String())
-	assert.Contains(t, w.Result().Status, expectedStatus, "Expected %v got %v", expectedStatus, w.Result().Status)
+	expected := ` + moduleName + `Model.` + strings.Title(moduleName) + `{
+		Id: 1,
+	}
+
+	assert.Equal(t, []` + moduleName + `Model.` + strings.Title(moduleName) + `{expected}, responseData.Data)
+	assert.Equal(t, "200 OK", w.Result().Status)
 }`
 	//Add data to e2e
 	testBytes := []byte(testString)

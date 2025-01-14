@@ -723,15 +723,15 @@ var Unauthorized = ErrorJson("Unauthorized", 401)`
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	router "github.com/` + folderName + `/router"
 	token "github.com/` + folderName + `/adapters/jwt"
-
+	tasksModel "github.com/` + folderName + `/app/tasks/domain/models"
 	/*
 		- Uncomment this when you are testing real data coming from database.
 		db "github.com/app/` + folderName + `/adapters/database"
@@ -780,11 +780,19 @@ func TestGetTasks(t *testing.T) {
 
 	router.ServeHTTP(w, req)
 
-	expected := ` + "`" + `{"data":[{"ID":0,"CreatedAt":"0001-01-01T00:00:00Z","UpdatedAt":"0001-01-01T00:00:00Z","DeletedAt":null,"Id":1,"Title":"Hello","Description":"World"}]}` + "`" + ` // Your expected data inside backquote
-	expectedStatus := "200 OK"
+	// Deserialize response body
+	var responseData struct {
+		Data []tasksModel.Task
+	}
+	err := json.Unmarshal(w.Body.Bytes(), &responseData)
+	require.NoError(t, err)
 
-	assert.Contains(t, w.Body.String(), expected, "Expected %v got %v", expected, w.Body.String())
-	assert.Contains(t, w.Result().Status, expectedStatus, "Expected %v got %v", expectedStatus, w.Result().Status)
+	expected := tasksModel.Task{
+		Id: 1,
+	}
+
+	assert.Equal(t, []tasksModel.Task{expected}, responseData.Data)
+	assert.Equal(t, "200 OK", w.Result().Status)
 }`
 
 	tasksTestBytes := []byte(tasksTestString)
