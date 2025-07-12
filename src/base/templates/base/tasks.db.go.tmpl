@@ -1,0 +1,58 @@
+package infraestructure
+
+import (
+	tasksModel "github.com/{{ .FolderName }}/app/tasks/domain/models"
+	// uncomment this and change _ for db when you are making database queries
+	_ "github.com/{{ .FolderName }}/adapters/database"
+	"errors"
+)
+
+type TasksDb struct {
+	// Add any dependencies or configurations related to the TasksRepository here, if needed.
+}
+
+func NewTasksDb() *TasksDb {
+	// Initialize any dependencies and configurations for the TasksRepository here, if needed.
+	return &TasksDb{}
+}
+
+func (t *TasksDb) CreateTasks(taskId int, title string, description string) error {
+	if taskId == 0 {
+		return errors.New("taskId is required")
+	}
+
+	var task tasksModel.Task
+	task.Id = 1
+	task.Title = title
+	task.Description = description
+
+	return nil
+}
+
+func (t *TasksDb) GetTasks() ([]tasksModel.Task, error) {
+	var tasks []tasksModel.Task
+	tasks = append(tasks, tasksModel.Task{Id: 1, Title: "Hello", Description: "World"})
+	return tasks, nil
+}
+
+func (t *TasksDb) GetOneTasks(taskId int) (tasksModel.Task, error) {
+	task := tasksModel.Task{Id: taskId, Title: "Sample Task", Description: "Sample Description"}
+	if task.Id == 0 {
+		return tasksModel.Task{}, errors.New("Task not found")
+	}
+	return task, nil
+}
+
+func (t *TasksDb) UpdateTasks(taskId string, title string, description string) error {
+	if taskId == "" {
+		return errors.New("taskId is required")
+	}
+	return nil
+}
+
+func (t *TasksDb) DeleteTasks(taskId string) error {
+	if taskId == "" {
+		return errors.New("taskId is required")
+	}
+	return nil
+}

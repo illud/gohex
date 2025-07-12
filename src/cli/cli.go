@@ -255,11 +255,6 @@ func Command() {
 			bar.Add(1)
 			time.Sleep(40 * time.Millisecond)
 
-			//helpers/async.go
-			os.Create(folderName + "/helpers/async.go")
-			bar.Add(1)
-			time.Sleep(40 * time.Millisecond)
-
 			//helpers/errors.go
 			os.Create(folderName + "/helpers/errors.go")
 			bar.Add(1)
@@ -343,7 +338,7 @@ func Command() {
 				installDependencies.Dir = folderName
 
 				//SWAG INIT
-				swagInit := exec.Command("cmd", "/c", "swag init")
+				swagInit := exec.Command("cmd", "/c", "swag init --parseDependency github.com/volatiletech/null/v8")
 				swagInit.Dir = folderName
 
 				_, err = swagInit.Output()
@@ -360,7 +355,7 @@ func Command() {
 				// fmt.Println(string(installDependenciesOut))
 
 				//INSTALL TEST DEPENDENCIES
-				installTestDependencies := exec.Command("cmd", "/c", "go get -t ./...")
+				installTestDependencies := exec.Command("cmd", "/c", "go mod tidy")
 				installTestDependencies.Dir = folderName
 
 				_, err = installTestDependencies.Output()
@@ -430,7 +425,7 @@ func Command() {
 				installDependencies.Dir = folderName
 
 				//SWAG INIT
-				swagInit := exec.Command("sh", "/c", "swag init")
+				swagInit := exec.Command("sh", "/c", "swag init --parseDependency github.com/volatiletech/null/v8")
 				swagInit.Dir = folderName
 
 				_, err = swagInit.Output()
@@ -447,7 +442,7 @@ func Command() {
 				// fmt.Println(string(installDependenciesOut))
 
 				//INSTALL TEST DEPENDENCIES
-				installTestDependencies := exec.Command("sh", "/c", "go get -t ./...")
+				installTestDependencies := exec.Command("sh", "/c", "go mod tidy")
 				installTestDependencies.Dir = folderName
 
 				_, err = installTestDependencies.Output()
@@ -562,7 +557,7 @@ func Command() {
 
 			//SWAG INIT Windows
 			if runtime.GOOS == "windows" {
-				swagInit := exec.Command("cmd", "/c", "swag init")
+				swagInit := exec.Command("cmd", "/c", "swag init --parseDependency github.com/volatiletech/null/v8")
 
 				_, err := swagInit.Output()
 				if err != nil {
@@ -573,7 +568,7 @@ func Command() {
 
 			//SWAG INIT Linux
 			if runtime.GOOS == "linux" {
-				swagInit := exec.Command("sh", "/c", "swag init")
+				swagInit := exec.Command("sh", "/c", "swag init --parseDependency github.com/volatiletech/null/v8")
 
 				_, err := swagInit.Output()
 				if err != nil {
@@ -629,71 +624,6 @@ func Command() {
 			if flagName == "gorm" {
 				base.BaseDbClient("gorm")
 			}
-			// if flagName == "prisma" {
-			// 	base.BaseDbClient("prisma")
-			// 	//create/schema.prisma
-			// 	os.MkdirAll("data/prisma/db", os.ModePerm)
-
-			// 	os.Create("data/prisma/schema.prisma")
-
-			// 	fmt.Println("")
-
-			// 	fmt.Println("To get this up and running in your database, we use the Prisma migration tool migrate to create and migrate our database:")
-			// 	fmt.Println("sync the database with your schema go run github.com/prisma/prisma-client-go migrate dev --name init")
-			// 	fmt.Println("After the migration, the Prisma Client Go client is automatically generated in your project. If you just want to re-generate the client, run go run github.com/prisma/prisma-client-go generate.")
-
-			// 	fmt.Println("For more visit https://github.com/prisma/prisma-client-go")
-
-			// 	//Install db DEPENDENCIES
-			// 	if runtime.GOOS == "windows" {
-			// 		fmt.Println("")
-			// 		fmt.Println("executing go get github.com/prisma/prisma-client-go")
-
-			// 		installDependencies := exec.Command("cmd", "/c", "go get github.com/prisma/prisma-client-go")
-
-			// 		//INSTALL DEPENDENCIES
-			// 		_, err = installDependencies.Output()
-			// 		if err != nil {
-			// 			os.Stderr.WriteString(err.Error())
-			// 		}
-			// 		// fmt.Println(string(installDependenciesOut))
-
-			// 		//Run prisma init
-			// 		installPrismaDependencies := exec.Command("cmd", "/c", "go run github.com/prisma/prisma-client-go migrate dev --name init")
-
-			// 		//INSTALL DEPENDENCIES
-			// 		_, err = installPrismaDependencies.Output()
-			// 		if err != nil {
-			// 			os.Stderr.WriteString(err.Error())
-			// 		}
-			// 		// fmt.Println(string(installPrismaDependenciesOut))
-			// 	}
-
-			// 	if runtime.GOOS == "linux" {
-			// 		fmt.Println("")
-			// 		fmt.Println("executing go get github.com/prisma/prisma-client-go")
-
-			// 		installDependencies := exec.Command("sh", "/c", "go get github.com/prisma/prisma-client-go.")
-
-			// 		//INSTALL DEPENDENCIES
-			// 		_, err = installDependencies.Output()
-			// 		if err != nil {
-			// 			os.Stderr.WriteString(err.Error())
-			// 		}
-			// 		// fmt.Println(string(installDependenciesOut))
-
-			// 		//Run prisma init
-			// 		installPrismaDependencies := exec.Command("sh", "/c", "go run github.com/prisma/prisma-client-go migrate dev --name init")
-
-			// 		//INSTALL DEPENDENCIES
-			// 		_, err = installPrismaDependencies.Output()
-			// 		if err != nil {
-			// 			os.Stderr.WriteString(err.Error())
-			// 		}
-			// 		// fmt.Println(string(installPrismaDependenciesOut))
-			// 	}
-
-			// }
 
 			//Install db DEPENDENCIES
 			if runtime.GOOS == "windows" {

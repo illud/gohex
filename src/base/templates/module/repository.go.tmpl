@@ -1,0 +1,13 @@
+package repositories
+
+import (
+	{{ .ModuleName }}Model "github.com/{{ .CurrentDirName }}/app/{{ .ModuleName }}/domain/models"
+)
+
+type I{{ .StructName }} interface {
+	Create{{ .StructName }}({{ .ModuleName }} {{ .ModuleName }}Model.{{ .StructName }}) error
+	Get{{ .StructName }}() ([]{{ .ModuleName }}Model.{{ .StructName }}, error)
+	GetOne{{ .StructName }}({{ .IdName }} int) ({{ .ModuleName }}Model.{{ .StructName }}, error)
+	Update{{ .StructName }}({{ .IdName }} int) error
+	Delete{{ .StructName }}({{ .IdName }} int) error
+}

@@ -1,0 +1,83 @@
+package aplication
+
+import (
+	"strconv"
+	"net/http"
+	"github.com/gin-gonic/gin"
+	{{.ModuleName}}Services "github.com/{{.CurrentDirName}}/app/{{.ModuleName}}/domain/services"
+	{{.ModuleName}}Database "github.com/{{.CurrentDirName}}/app/{{.ModuleName}}/infraestructure"
+	{{.ModuleName}}Model "github.com/{{.CurrentDirName}}/app/{{.ModuleName}}/domain/models"
+)
+
+var {{.ModuleName}}Db = {{.ModuleName}}Database.New{{.ModuleNameTitle}}Db()
+var service = {{.ModuleName}}Services.NewService({{.ModuleName}}Db)
+
+func Create{{.ModuleNameTitle}}(c *gin.Context) {
+	var {{.ModuleName}} {{.ModuleName}}Model.{{.ModuleNameTitle}}
+	if err := c.ShouldBindJSON(&{{.ModuleName}}); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	err := service.Create{{.ModuleNameTitle}}({{.ModuleName}})
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"data": "{{.ModuleName}} created"})
+}
+
+func Get{{.ModuleNameTitle}}(c *gin.Context) {
+	result, err := service.Get{{.ModuleNameTitle}}()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"data": result})
+}
+
+func GetOne{{.ModuleNameTitle}}(c *gin.Context) {
+	{{.ModuleCamel}}Id, err := strconv.Atoi(c.Param("{{.ModuleCamel}}Id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	result, err := service.GetOne{{.ModuleNameTitle}}({{.ModuleCamel}}Id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"data": result})
+}
+
+func Update{{.ModuleNameTitle}}(c *gin.Context) {
+	var {{.ModuleName}} {{.ModuleName}}Model.{{.ModuleNameTitle}}
+	if err := c.ShouldBindJSON(&{{.ModuleName}}); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	{{.ModuleCamel}}Id, err := strconv.Atoi(c.Param("{{.ModuleCamel}}Id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	err = service.Update{{.ModuleNameTitle}}({{.ModuleCamel}}Id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"data": "{{.ModuleName}} updated"})
+}
+
+func Delete{{.ModuleNameTitle}}(c *gin.Context) {
+	{{.ModuleCamel}}Id, err := strconv.Atoi(c.Param("{{.ModuleCamel}}Id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	err = service.Delete{{.ModuleNameTitle}}({{.ModuleCamel}}Id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"data": "{{.ModuleName}} deleted"})
+}

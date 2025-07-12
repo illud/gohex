@@ -1,0 +1,56 @@
+package services
+
+import (
+	tasksModel "github.com/{{ .FolderName }}/app/tasks/domain/models"
+	tasksInterface "github.com/{{ .FolderName }}/app/tasks/domain/repositories"
+)
+
+type Service struct {
+	tasksRepository tasksInterface.ITasks
+}
+
+func NewService(tasksRepository tasksInterface.ITasks) *Service {
+	return &Service{
+		tasksRepository: tasksRepository,
+	}
+}
+
+func (s *Service) CreateTasks(taskId int, title string, description string) error {
+	err := s.tasksRepository.CreateTasks(taskId, title, description)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s *Service) GetTasks() ([]tasksModel.Task, error) {
+	tasks, err := s.tasksRepository.GetTasks()
+	if err != nil {
+		return nil, err
+	}
+	return tasks, nil
+}
+
+func (s *Service) GetOneTasks(taskId int) (tasksModel.Task, error) {
+	task, err := s.tasksRepository.GetOneTasks(taskId)
+	if err != nil {
+		return tasksModel.Task{}, err
+	}
+	return task, nil
+}
+
+func (s *Service) UpdateTasks(taskId string, title string, description string) error {
+	err := s.tasksRepository.UpdateTasks(taskId, title, description)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s *Service) DeleteTasks(taskId string) error {
+	err := s.tasksRepository.DeleteTasks(taskId)
+	if err != nil {
+		return err
+	}
+	return nil
+}

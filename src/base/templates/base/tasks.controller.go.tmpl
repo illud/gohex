@@ -1,0 +1,137 @@
+package tasks
+
+import (
+	"strconv"
+	"net/http"
+	"github.com/gin-gonic/gin"
+	tasksService "github.com/{{ .FolderName }}/app/tasks/domain/services"
+	tasksDatabase "github.com/{{ .FolderName }}/app/tasks/infraestructure"
+	tasksModel "github.com/{{ .FolderName }}/app/tasks/domain/models"
+)
+
+// Create a TasksDb instance
+var tasksDb = tasksDatabase.NewTasksDb()
+
+// Create a Service instance using the TasksDb
+var service = tasksService.NewService(tasksDb)
+
+// CreateTasks handles the creation of a new task.
+// @Summary Create Tasks
+// @Description Create Tasks
+// @Tags Tasks
+// @Security BearerAuth
+// @Accept json
+// @Produce json
+// @Param Body body tasksModel.Task true "Body to create Tasks"
+// @Success 200 {string} string "Task created successfully"
+// @Router /tasks [post]
+func CreateTasks(c *gin.Context) {
+	var task tasksModel.Task
+	if err := c.ShouldBindJSON(&task); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	err := service.CreateTasks(task.Id, task.Title, task.Description)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": "task created"})
+}
+
+// GetTasks retrieves all tasks.
+// @Summary Get Tasks
+// @Description Get Tasks
+// @Tags Tasks
+// @Security BearerAuth
+// @Accept json
+// @Produce json
+// @Success 200 {object} tasksModel.Task[]
+// @Router /tasks [get]
+func GetTasks(c *gin.Context) {
+	result, err := service.GetTasks()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": result})
+}
+
+// GetOneTasks retrieves a single task by taskId.
+// @Summary Get Tasks
+// @Description Get Tasks
+// @Tags Tasks
+// @Security BearerAuth
+// @Param taskId path int true "taskId"
+// @Accept json
+// @Produce json
+// @Success 200 {object} tasksModel.Task
+// @Router /tasks/{taskId} [get]
+func GetOneTasks(c *gin.Context) {
+	taskId, err := strconv.Atoi(c.Param("taskId"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid taskId"})
+		return
+	}
+
+	result, err := service.GetOneTasks(taskId)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": result})
+}
+
+// UpdateTasks handles updating an existing task by taskId.
+// @Summary Update Tasks
+// @Description Update Tasks
+// @Tags Tasks
+// @Security BearerAuth
+// @Param taskId path int true "taskId"
+// @Accept json
+// @Produce json
+// @Param Body body tasksModel.Task true "Body to update"
+// @Success 200 {string} string "Task updated successfully"
+// @Router /tasks/{taskId} [put]
+func UpdateTasks(c *gin.Context) {
+	taskId := c.Param("taskId")
+	var task tasksModel.Task
+	if err := c.ShouldBindJSON(&task); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	err := service.UpdateTasks(taskId, task.Title, task.Description)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": "task updated"})
+}
+
+// DeleteTasks handles deleting a task by taskId.
+// @Summary Delete Tasks
+// @Description Delete Tasks
+// @Tags Tasks
+// @Security BearerAuth
+// @Param taskId path int true "taskId"
+// @Accept json
+// @Produce json
+// @Success 200 {string} string "Task deleted successfully"
+// @Router /tasks/{taskId} [delete]
+func DeleteTasks(c *gin.Context) {
+	taskId := c.Param("taskId")
+
+	err := service.DeleteTasks(taskId)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": "task deleted"})
+}
