@@ -1,0 +1,76 @@
+package tasks_test
+
+import (
+	"bytes"
+	"encoding/json"
+	"net/http"
+	"net/http/httptest"
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+	router "github.com/{{.FolderName}}/router"
+	token "github.com/{{.FolderName}}/adapters/jwt"
+	tasksModel "github.com/{{.FolderName}}/app/tasks/domain/models"
+	/*
+		- Uncomment this when you are testing real data coming from database.
+		db "github.com/{{.FolderName}}/adapters/database"
+	*/
+)
+
+// Setup and Teardown
+func setup(t *testing.T) func(t *testing.T) {
+	// Setup
+	t.Log("setup sub test")
+
+	// For test db
+	t.Setenv("ENV", "TEST")
+
+	/*
+		- Uncomment this when you are testing real data coming from test database.
+		db.Connect()
+	*/
+
+	// Teardown
+	return func(t *testing.T) {
+		t.Log("teardown sub test")
+	}
+}
+
+func TestGetTasks(t *testing.T) {
+	// Call Setup/Teardown
+	teardown := setup(t)
+	defer teardown(t)
+
+	tokenData := token.GenerateToken("test") //Your token data
+
+	router := router.Router()
+
+	w := httptest.NewRecorder()
+
+	values := map[string]interface{}{"token": tokenData} // this is the body in case you make a post, put
+	jsonValue, _ := json.Marshal(values)
+
+	req, _ := http.NewRequest("GET", "/tasks", bytes.NewBuffer(jsonValue))
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", tokenData)
+
+	// In case you use cookies like for example token
+	req.Header.Set("Cookie", "token=" + tokenData + ";")
+
+	router.ServeHTTP(w, req)
+
+	// Deserialize response body
+	var responseData struct {
+		Data []tasksModel.Task
+	}
+	err := json.Unmarshal(w.Body.Bytes(), &responseData)
+	require.NoError(t, err)
+
+	expected := tasksModel.Task{
+		Id: 1,
+	}
+
+	assert.Equal(t, []tasksModel.Task{expected}, responseData.Data)
+	assert.Equal(t, "200 OK", w.Result().Status)
+}

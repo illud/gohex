@@ -1,0 +1,21 @@
+package helpers
+
+import (
+	"encoding/json"
+)
+
+type Error struct {
+	Error string
+	Code  int
+}
+
+func ErrorJson(error string, code int) string {
+	jsondata := &Error{error, code}
+	encodejson, _ := json.Marshal(jsondata)
+	return string(encodejson)
+}
+
+var BadRequest = ErrorJson("Bad Request", 400)
+var Forbidden = ErrorJson("Forbidden", 403)
+var NotFound = ErrorJson("Not Found", 404)
+var Unauthorized = ErrorJson("Unauthorized", 401)

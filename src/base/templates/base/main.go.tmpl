@@ -1,0 +1,37 @@
+package main
+
+import (
+	"fmt"
+	"strconv"
+	//Uncomment next line when you want to connect to a database
+	//db "github.com/{{ .FolderName }}/adapters/database"
+	env "github.com/{{ .FolderName }}/env"
+	router "github.com/{{ .FolderName }}/router"
+)
+
+//The next lines are for swagger docs
+// @title {{ .FolderName }}
+// @version version(1.0)
+// @description Description of specifications
+// @Precautions when using termsOfService specifications
+
+// @host localhost:5000
+// @BasePath /
+
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
+func main() {
+	//Uncomment next line when you want to connect to a database
+	//Connect to database
+	//db.Connect()
+
+	//Load .env port
+	port := strconv.Itoa(env.Load().PORT)
+
+	if port == "" {
+		fmt.Println("$PORT must be set")
+	}
+
+	router.Router().Run(":" + port)
+}

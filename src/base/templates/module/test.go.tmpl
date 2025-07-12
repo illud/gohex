@@ -1,0 +1,67 @@
+package {{ .ModuleName }}_test
+
+import (
+	"bytes"
+	"encoding/json"
+	"net/http"
+	"net/http/httptest"
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+	router "github.com/{{ .CurrentDirName }}/router"
+	token "github.com/{{ .CurrentDirName }}/adapters/jwt"
+	{{ .ModuleName }}Model "github.com/{{ .CurrentDirName }}/app/{{ .ModuleName }}/domain/models"
+	/*
+		- Uncomment this when you are testing real data coming from database.
+		db "github.com/{{ .CurrentDirName }}/infraestructure"
+	*/
+)
+
+// Setup and Teardown
+func setup(t *testing.T) func(t *testing.T) {
+	t.Log("setup sub test")
+	t.Setenv("ENV", "TEST")
+
+	/*
+		- Uncomment this when you are testing real data coming from test database.
+		db.Connect()
+	*/
+
+	return func(t *testing.T) {
+		t.Log("teardown sub test")
+	}
+}
+
+func TestGet{{ .StructName }}(t *testing.T) {
+	teardown := setup(t)
+	defer teardown(t)
+
+	tokenData := token.GenerateToken("test")
+
+	router := router.Router()
+	w := httptest.NewRecorder()
+
+	values := map[string]interface{}{"token": tokenData}
+	jsonValue, _ := json.Marshal(values)
+
+	req, _ := http.NewRequest("GET", "/{{ .KebabCase }}", bytes.NewBuffer(jsonValue))
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", tokenData)
+	req.Header.Set("Cookie", "token="+tokenData+";")
+
+	router.ServeHTTP(w, req)
+
+	var responseData struct {
+		Data []{{ .ModuleName }}Model.{{ .StructName }}
+	}
+	err := json.Unmarshal(w.Body.Bytes(), &responseData)
+	require.NoError(t, err)
+
+	expected := {{ .ModuleName }}Model.{{ .StructName }}{
+		Id: 1,
+	}
+
+	assert.Equal(t, []{{ .ModuleName }}Model.{{ .StructName }}{expected}, responseData.Data)
+	assert.Equal(t, "200 OK", w.Result().Status)
+}

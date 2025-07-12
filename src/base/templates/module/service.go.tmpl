@@ -1,0 +1,56 @@
+package services
+
+import (
+	{{ .ModuleName }}Model "github.com/{{ .CurrentDirName }}/app/{{ .ModuleName }}/domain/models"
+	{{ .ModuleName }}Interface "github.com/{{ .CurrentDirName }}/app/{{ .ModuleName }}/domain/repositories"
+)
+
+type Service struct {
+	{{ .ModuleName }}Repository {{ .ModuleName }}Interface.I{{ .StructName }}
+}
+
+func NewService({{ .ModuleName }}Repository {{ .ModuleName }}Interface.I{{ .StructName }}) *Service {
+	return &Service{
+		{{ .ModuleName }}Repository: {{ .ModuleName }}Repository,
+	}
+}
+
+func (s *Service) Create{{ .StructName }}({{ .ModuleName }} {{ .ModuleName }}Model.{{ .StructName }}) error {
+	err := s.{{ .ModuleName }}Repository.Create{{ .StructName }}({{ .ModuleName }})
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s *Service) Get{{ .StructName }}() ([]{{ .ModuleName }}Model.{{ .StructName }}, error) {
+	result, err := s.{{ .ModuleName }}Repository.Get{{ .StructName }}()
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
+}
+
+func (s *Service) GetOne{{ .StructName }}({{ .ParamName }}Id int) ({{ .ModuleName }}Model.{{ .StructName }}, error) {
+	result, err := s.{{ .ModuleName }}Repository.GetOne{{ .StructName }}({{ .ParamName }}Id)
+	if err != nil {
+		return {{ .ModuleName }}Model.{{ .StructName }}{}, err
+	}
+	return result, nil
+}
+
+func (s *Service) Update{{ .StructName }}({{ .ParamName }}Id int) error {
+	err := s.{{ .ModuleName }}Repository.Update{{ .StructName }}({{ .ParamName }}Id)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s *Service) Delete{{ .StructName }}({{ .ParamName }}Id int) error {
+	err := s.{{ .ModuleName }}Repository.Delete{{ .StructName }}({{ .ParamName }}Id)
+	if err != nil {
+		return err
+	}
+	return nil
+}

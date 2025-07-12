@@ -1,0 +1,39 @@
+package infraestructure
+
+import (
+	{{ .ModuleName }}Model "github.com/{{ .CurrentDirName }}/app/{{ .ModuleName }}/domain/models"
+	// uncomment this and change _ for db when you are making database queries
+	_ "github.com/{{ .CurrentDirName }}/adapters/database"
+)
+
+type {{ .StructName }}Db struct {
+	// Add any dependencies or configurations related to the repository here if needed.
+}
+
+func New{{ .StructName }}Db() *{{ .StructName }}Db {
+	return &{{ .StructName }}Db{}
+}
+
+var {{ .ModuleName }} []{{ .ModuleName }}Model.{{ .StructName }}
+
+func ({{ .FirstChar }} *{{ .StructName }}Db) Create{{ .StructName }}({{ .ModuleName }} {{ .ModuleName }}Model.{{ .StructName }}) error {
+	return nil
+}
+
+func ({{ .FirstChar }} *{{ .StructName }}Db) Get{{ .StructName }}() ([]{{ .ModuleName }}Model.{{ .StructName }}, error) {
+	var {{ .ModuleName }} []{{ .ModuleName }}Model.{{ .StructName }}
+	{{ .ModuleName }} = append({{ .ModuleName }}, {{ .ModuleName }}Model.{{ .StructName }}{Id: 1})
+	return {{ .ModuleName }}, nil
+}
+
+func ({{ .FirstChar }} *{{ .StructName }}Db) GetOne{{ .StructName }}({{ .ParamName }}Id int) ({{ .ModuleName }}Model.{{ .StructName }}, error) {
+	return {{ .ModuleName }}Model.{{ .StructName }}{Id: {{ .ParamName }}Id}, nil
+}
+
+func ({{ .FirstChar }} *{{ .StructName }}Db) Update{{ .StructName }}({{ .ParamName }}Id int) error {
+	return nil
+}
+
+func ({{ .FirstChar }} *{{ .StructName }}Db) Delete{{ .StructName }}({{ .ParamName }}Id int) error {
+	return nil
+}

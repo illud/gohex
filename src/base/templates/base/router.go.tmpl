@@ -1,0 +1,32 @@
+package router
+
+import (
+	tasksController "github.com/{{ .FolderName }}/app/tasks/aplication"
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
+
+	docs "github.com/{{ .FolderName }}/docs"
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
+)
+
+func Router() *gin.Engine {
+	//this sets gin to release mode
+	gin.SetMode(gin.ReleaseMode)
+
+	router := gin.New()
+
+	router.Use(cors.Default())
+
+	//SWAGGER
+	docs.SwaggerInfo.BasePath = "/"
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
+
+	router.POST("/tasks", tasksController.CreateTasks)
+	router.GET("/tasks", tasksController.GetTasks)
+	router.GET("/tasks/:taskId", tasksController.GetOneTasks)
+	router.PUT("/tasks/:taskId", tasksController.UpdateTasks)
+	router.DELETE("/tasks/:taskId", tasksController.DeleteTasks)
+
+	return router
+}

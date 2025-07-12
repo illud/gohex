@@ -190,7 +190,7 @@ Build your application and after that, go to http://localhost:5000/swagger/index
 When you create a new module swagger will be added automatically then you only need to modified what you need, but remember each time you modified swagger use the next command 
 
 ```shell
-swag init
+swag init --parseDependency github.com/volatiletech/null/v8
 ```
 To learn more visit (https://github.com/swaggo/gin-swagger)
 

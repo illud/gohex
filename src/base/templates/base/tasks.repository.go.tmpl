@@ -1,0 +1,13 @@
+package repositories
+
+import (
+	tasksModel "github.com/{{ .FolderName }}/app/tasks/domain/models"
+)
+
+type ITasks interface {
+	CreateTasks(taskId int, title string, description string) error
+	GetTasks() ([]tasksModel.Task, error)
+	GetOneTasks(taskId int) (tasksModel.Task, error)
+	UpdateTasks(taskId string, title string, description string) error
+	DeleteTasks(taskId string) error
+}
