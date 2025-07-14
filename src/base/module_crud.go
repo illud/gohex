@@ -37,7 +37,7 @@ func BaseModuleCrud(moduleName string, moduleNameSnakeCase string, moduleNotModi
 		}{
 			CurrentDirName:  currentDirName,
 			ModuleName:      moduleName,
-			ModuleNameTitle: strings.Title(moduleName),
+			ModuleNameTitle: caser.String(moduleName),
 			ModuleCamel:     str.FormatSnakeCaseToCamelCase(moduleName),
 		},
 	)
@@ -49,7 +49,7 @@ func BaseModuleCrud(moduleName string, moduleNameSnakeCase string, moduleNotModi
 		struct {
 			StructName string
 		}{
-			StructName: strings.Title(moduleName),
+			StructName: caser.String(moduleName),
 		},
 	)
 
@@ -65,7 +65,7 @@ func BaseModuleCrud(moduleName string, moduleNameSnakeCase string, moduleNotModi
 		}{
 			ModuleName:     moduleName,
 			CurrentDirName: currentDirName,
-			StructName:     strings.Title(moduleName),
+			StructName:     caser.String(moduleName),
 			ParamName:      str.FormatSnakeCaseToCamelCase(moduleNotModify),
 		},
 	)
@@ -81,7 +81,7 @@ func BaseModuleCrud(moduleName string, moduleNameSnakeCase string, moduleNotModi
 		}{
 			ModuleName:     moduleName,
 			CurrentDirName: currentDirName,
-			StructName:     strings.Title(moduleName),
+			StructName:     caser.String(moduleName),
 			IdName:         str.FormatSnakeCaseToCamelCase(moduleNotModify) + "Id",
 		},
 	)
@@ -99,7 +99,7 @@ func BaseModuleCrud(moduleName string, moduleNameSnakeCase string, moduleNotModi
 		}{
 			ModuleName:     moduleName,
 			CurrentDirName: currentDirName,
-			StructName:     strings.Title(moduleName),
+			StructName:     caser.String(moduleName),
 			ParamName:      str.FormatSnakeCaseToCamelCase(moduleNotModify),
 			FirstChar:      str.GetFirstCharacterOfString(moduleName),
 		},
@@ -117,7 +117,7 @@ func BaseModuleCrud(moduleName string, moduleNameSnakeCase string, moduleNotModi
 		}{
 			ModuleName:     moduleName,
 			CurrentDirName: currentDirName,
-			StructName:     strings.Title(moduleName),
+			StructName:     caser.String(moduleName),
 			KebabCase:      regex.StringToHyphen(moduleName),
 		},
 	)

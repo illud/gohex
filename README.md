@@ -17,7 +17,6 @@ Gohex is a cli tool to create Hexagonal Architecture + Vertical Slicing app for 
 - [Swagger](#swagger) (https://github.com/swaggo/gin-swagger)
 - Jwt (https://github.com/dgrijalva/jwt-go)
 - Bcrypt (https://golang.org/x/crypto/bcrypt)
-- [Async](#async) - Async functions
 - Auto add swagger for your endpoint
 - [Modules](#modules) - Auto generate module with crud flow
 - [Endpoint](#endpoint) - Auto add new endpoint(POST, GET, PUT, DELETE)
@@ -154,35 +153,6 @@ if err != nil {
 ```
 To learn more visit (https://github.com/jinzhu/gorm)
 
-## Async
-How to use async:
-
-```go
-package main
-
-import async "yourProjectName/helpers"
-
-//This functions wait 3 seconds to return 1
-func DoneAsync() int {
-	fmt.Println("Warming up ...")
-	time.Sleep(3 * time.Second)
-	fmt.Println("Done ...")
-	return 1
-}
-
-func main() {
-	fmt.Println("Let's start ...")
-
-  //Here you call the function as async function
-	future := async.Exec(func() interface{} {
-		return DoneAsync()//The function that will await
-	}).Await()
-
-	fmt.Println("Done is running ...")
-	fmt.Println(future)
-}
-```
-
 # Swagger
 
 Build your application and after that, go to http://localhost:5000/swagger/index.html , you to see your Swagger UI.
@@ -273,7 +243,6 @@ Folder Structure:
 │       env.go
 │
 ├───helpers
-│       async.go
 │       errors.go
 │
 └───router

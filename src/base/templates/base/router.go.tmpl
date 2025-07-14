@@ -22,6 +22,7 @@ func Router() *gin.Engine {
 	docs.SwaggerInfo.BasePath = "/"
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
+	//tasks
 	router.POST("/tasks", tasksController.CreateTasks)
 	router.GET("/tasks", tasksController.GetTasks)
 	router.GET("/tasks/:taskId", tasksController.GetOneTasks)

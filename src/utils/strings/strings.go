@@ -2,8 +2,12 @@ package strings
 
 import (
 	"strings"
-	"unicode"
+
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 )
+
+var caser = cases.Title(language.Und)
 
 func GetFirstCharacterOfString(str string) string {
 	return str[0:1]
@@ -31,7 +35,7 @@ func FormatSnakeCaseToCamelCase(input string) string {
 		} else {
 			// Convert subsequent parts to lowercase and uppercase the first letter
 			if len(part) > 0 {
-				formattedPart := strings.Title(strings.ToLower(part))
+				formattedPart := caser.String(strings.ToLower(part))
 				formattedParts = append(formattedParts, formattedPart)
 			}
 		}
@@ -45,21 +49,24 @@ func FormatSnakeCaseToCamelCase(input string) string {
 
 // remove - from string (eg. my-variable-name -> MyVariableName)
 func DashToCamel(input string) string {
+	caser := cases.Title(language.Und)
 	words := strings.Split(input, "-")
-	for i := 0; i < len(words); i++ {
-		words[i] = CapitalizeFirstLetter(words[i])
+
+	for i, word := range words {
+		words[i] = caser.String(word)
 	}
+
 	return strings.Join(words, "")
 }
 
-func CapitalizeFirstLetter(word string) string {
-	if len(word) == 0 {
-		return ""
-	}
-	r := []rune(word)
-	r[0] = unicode.ToUpper(r[0])
-	return string(r)
-}
+// func CapitalizeFirstLetter(word string) string {
+// 	if len(word) == 0 {
+// 		return ""
+// 	}
+// 	r := []rune(word)
+// 	r[0] = unicode.ToUpper(r[0])
+// 	return string(r)
+// }
 
 // Format hyphen to camelCase (eg. my-variable-name -> myVariableName)
 func FormatHyphenToCamelCase(input string) string {
@@ -75,7 +82,7 @@ func FormatHyphenToCamelCase(input string) string {
 		} else {
 			// Convert subsequent parts to lowercase and uppercase the first letter
 			if len(part) > 0 {
-				formattedPart := strings.Title(strings.ToLower(part))
+				formattedPart := caser.String(strings.ToLower(part))
 				formattedParts = append(formattedParts, formattedPart)
 			}
 		}

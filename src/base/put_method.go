@@ -25,20 +25,20 @@ func PutMethod(moduleName string, methodName string) {
 	//Add data to controller.go
 	controllerString :=
 		`
-// Put ` + strings.Title(moduleName) + `
-// @Summary Put ` + strings.Title(moduleName) + `
+// Put ` + caser.String(moduleName) + `
+// @Summary Put ` + caser.String(moduleName) + `
 // @Schemes
-// @Description Put ` + strings.Title(moduleName) + `
-// @Tags ` + strings.Title(moduleName) + `
+// @Description Put ` + caser.String(moduleName) + `
+// @Tags ` + caser.String(moduleName) + `
 // @Security BearerAuth
 // @Param ` + str.FormatHyphenToCamelCase(endpointName) + `Id path int true "` + str.FormatHyphenToCamelCase(endpointName) + `Id"
 // @Accept json
 // @Produce json
-// @Param Body body ` + moduleName + `Model.` + strings.Title(moduleName) + ` true "Body to update ` + strings.Title(moduleName) + `"
+// @Param Body body ` + moduleName + `Model.` + caser.String(moduleName) + ` true "Body to update ` + caser.String(moduleName) + `"
 // @Success 200
 // @Router /` + endpointName + `/` + strings.ToLower(methodName) + `/{` + str.FormatHyphenToCamelCase(endpointName) + `Id} [Put]
-func ` + strings.Title(str.DashToCamel(methodName)) + `(c *gin.Context) {
-	var ` + moduleName + ` ` + moduleName + `Model.` + strings.Title(moduleName) + `
+func ` + str.DashToCamel(methodName) + `(c *gin.Context) {
+	var ` + moduleName + ` ` + moduleName + `Model.` + caser.String(moduleName) + `
 	if err := c.ShouldBindJSON(&` + moduleName + `); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -50,7 +50,7 @@ func ` + strings.Title(str.DashToCamel(methodName)) + `(c *gin.Context) {
 		return
 	}
 
-	err = service.` + strings.Title(str.DashToCamel(methodName)) + `(` + str.FormatHyphenToCamelCase(endpointName) + `Id)
+	err = service.` + str.DashToCamel(methodName) + `(` + str.FormatHyphenToCamelCase(endpointName) + `Id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -71,8 +71,8 @@ func ` + strings.Title(str.DashToCamel(methodName)) + `(c *gin.Context) {
 	// 	//Add data to service.go
 	servicesString :=
 		`
-func (s *Service) ` + strings.Title(str.DashToCamel(methodName)) + `(` + str.FormatHyphenToCamelCase(endpointName) + `Id int) error {
-	err := s.` + moduleName + `Repository.` + strings.Title(str.DashToCamel(methodName)) + `(` + str.FormatHyphenToCamelCase(endpointName) + `Id)
+func (s *Service) ` + str.DashToCamel(methodName) + `(` + str.FormatHyphenToCamelCase(endpointName) + `Id int) error {
+	err := s.` + moduleName + `Repository.` + str.DashToCamel(methodName) + `(` + str.FormatHyphenToCamelCase(endpointName) + `Id)
 	if err != nil {
 		return err
 	}
@@ -87,7 +87,7 @@ func (s *Service) ` + strings.Title(str.DashToCamel(methodName)) + `(` + str.For
 
 	// 	//Add data to module/infraestructure/module.db.go
 	repositoryInterfaceString :=
-		`	` + strings.Title(str.DashToCamel(methodName)) + `(` + str.FormatHyphenToCamelCase(endpointName) + `Id int) error
+		`	` + str.DashToCamel(methodName) + `(` + str.FormatHyphenToCamelCase(endpointName) + `Id int) error
 }`
 
 	repositoryResult, err := find.FindFile("app/" + moduleName + "/domain/repositories/")
@@ -102,7 +102,7 @@ func (s *Service) ` + strings.Title(str.DashToCamel(methodName)) + `(` + str.For
 	// 	//Add data to module/infraestructure/module.db.go
 	infraestructureString :=
 		`
-func (` + str.GetFirstCharacterOfString(moduleName) + ` *` + strings.Title(moduleName) + `Db) ` + strings.Title(str.DashToCamel(methodName)) + `(` + str.FormatHyphenToCamelCase(endpointName) + `Id int) error {
+func (` + str.GetFirstCharacterOfString(moduleName) + ` *` + caser.String(moduleName) + `Db) ` + str.DashToCamel(methodName) + `(` + str.FormatHyphenToCamelCase(endpointName) + `Id int) error {
 	// Implement your update logic here
 	return nil
 }
@@ -124,7 +124,7 @@ func (` + str.GetFirstCharacterOfString(moduleName) + ` *` + strings.Title(modul
 	for i, line := range lines {
 		if strings.Contains(line, "//"+moduleName) {
 			lines[i] = `	//` + moduleName + ` 
-	router.PUT("/` + endpointName + `/` + strings.ToLower(methodName) + `/:` + str.FormatHyphenToCamelCase(endpointName) + `Id", ` + moduleName + `Controller.` + strings.Title(str.DashToCamel(methodName)) + `)`
+	router.PUT("/` + endpointName + `/` + strings.ToLower(methodName) + `/:` + str.FormatHyphenToCamelCase(endpointName) + `Id", ` + moduleName + `Controller.` + str.DashToCamel(methodName) + `)`
 		}
 
 	}

@@ -25,18 +25,18 @@ func GetMethod(moduleName string, methodName string) {
 	//Add data to controller.go
 	controllerString :=
 		`
-// Get ` + strings.Title(moduleName) + `
-// @Summary Get ` + strings.Title(moduleName) + `
+// Get ` + caser.String(moduleName) + `
+// @Summary Get ` + caser.String(moduleName) + `
 // @Schemes
-// @Description Get ` + strings.Title(moduleName) + `
-// @Tags ` + strings.Title(moduleName) + `
+// @Description Get ` + caser.String(moduleName) + `
+// @Tags ` + caser.String(moduleName) + `
 // @Security BearerAuth
 // @Accept json
 // @Produce json
 // @Success 200
 // @Router /` + endpointName + `/` + strings.ToLower(methodName) + ` [Get]
-func ` + strings.Title(str.DashToCamel(methodName)) + `(c *gin.Context) {
-	result, err := service.` + strings.Title(str.DashToCamel(methodName)) + `()
+func ` + str.DashToCamel(methodName) + `(c *gin.Context) {
+	result, err := service.` + str.DashToCamel(methodName) + `()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -57,8 +57,8 @@ func ` + strings.Title(str.DashToCamel(methodName)) + `(c *gin.Context) {
 	// 	//Add data to service.go
 	servicesString :=
 		`
-func (s *Service) ` + strings.Title(str.DashToCamel(methodName)) + `() ([]` + moduleName + `Model.` + strings.Title(moduleName) + `, error) {
-	result, err := s.` + moduleName + `Repository.` + strings.Title(str.DashToCamel(methodName)) + `()
+func (s *Service) ` + str.DashToCamel(methodName) + `() ([]` + moduleName + `Model.` + caser.String(moduleName) + `, error) {
+	result, err := s.` + moduleName + `Repository.` + str.DashToCamel(methodName) + `()
 	if err != nil {
 		return nil, err
 	}
@@ -72,7 +72,7 @@ func (s *Service) ` + strings.Title(str.DashToCamel(methodName)) + `() ([]` + mo
 
 	// 	//Add data to module/infraestructure/module.db.go
 	repositoryInterfaceString :=
-		`	` + strings.Title(str.DashToCamel(methodName)) + `() ([]` + moduleName + `Model.` + strings.Title(moduleName) + `, error)
+		`	` + str.DashToCamel(methodName) + `() ([]` + moduleName + `Model.` + caser.String(moduleName) + `, error)
 }`
 
 	repositoryResult, err := find.FindFile("app/" + moduleName + "/domain/repositories/")
@@ -87,10 +87,10 @@ func (s *Service) ` + strings.Title(str.DashToCamel(methodName)) + `() ([]` + mo
 	// 	//Add data to module/infraestructure/module.db.go
 	infraestructureString :=
 		`
-func (` + str.GetFirstCharacterOfString(moduleName) + ` ` + strings.Title(moduleName) + `Db) ` + strings.Title(str.DashToCamel(methodName)) + `() ([]` + moduleName + `Model.` + strings.Title(moduleName) + `, error) {
+func (` + str.GetFirstCharacterOfString(moduleName) + ` ` + caser.String(moduleName) + `Db) ` + str.DashToCamel(methodName) + `() ([]` + moduleName + `Model.` + caser.String(moduleName) + `, error) {
 	// Implement your retrieval logic here
-	var ` + moduleName + ` []` + moduleName + `Model.` + strings.Title(moduleName) + `
-	` + moduleName + ` = append(` + moduleName + `, ` + moduleName + `Model.` + strings.Title(moduleName) + `{Id: 1})
+	var ` + moduleName + ` []` + moduleName + `Model.` + caser.String(moduleName) + `
+	` + moduleName + ` = append(` + moduleName + `, ` + moduleName + `Model.` + caser.String(moduleName) + `{Id: 1})
 	return ` + moduleName + `, nil
 }`
 	infraestructureResult, err := find.FindFile("app/" + moduleName + "/infraestructure/")
@@ -110,7 +110,7 @@ func (` + str.GetFirstCharacterOfString(moduleName) + ` ` + strings.Title(module
 	for i, line := range lines {
 		if strings.Contains(line, "//"+moduleName) {
 			lines[i] = `	//` + moduleName + ` 
-	router.GET("/` + endpointName + `/` + strings.ToLower(methodName) + `", ` + moduleName + `Controller.` + strings.Title(str.DashToCamel(methodName)) + `)`
+	router.GET("/` + endpointName + `/` + strings.ToLower(methodName) + `", ` + moduleName + `Controller.` + str.DashToCamel(methodName) + `)`
 		}
 
 	}

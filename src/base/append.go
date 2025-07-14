@@ -9,7 +9,11 @@ import (
 
 	utils "github.com/illud/gohex/src/utils/append"
 	str "github.com/illud/gohex/src/utils/strings"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 )
+
+var caser = cases.Title(language.Und)
 
 // ADD controller to router.go crud
 func AppendToRoutingCrud(moduleName string, moduleNotModify string) {
@@ -48,11 +52,11 @@ func AppendToRoutingCrud(moduleName string, moduleNotModify string) {
 
 		if strings.Contains(line, "return router") {
 			lines[i] = ` //` + moduleName + `
-	router.POST("/` + str.ToKebabCase(moduleNotModify) + `", ` + moduleName + `Controller.Create` + strings.Title(moduleName) + `)
-	router.GET("/` + str.ToKebabCase(moduleNotModify) + `", ` + moduleName + `Controller.Get` + strings.Title(moduleName) + `)
-	router.GET("/` + str.ToKebabCase(moduleNotModify) + `/:` + str.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id", ` + moduleName + `Controller.GetOne` + strings.Title(moduleName) + `)
-	router.PUT("/` + str.ToKebabCase(moduleNotModify) + `/:` + str.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id", ` + moduleName + `Controller.Update` + strings.Title(moduleName) + `)
-	router.DELETE("/` + str.ToKebabCase(moduleNotModify) + `/:` + str.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id", ` + moduleName + `Controller.Delete` + strings.Title(moduleName) + `)
+	router.POST("/` + str.ToKebabCase(moduleNotModify) + `", ` + moduleName + `Controller.Create` + caser.String(moduleName) + `)
+	router.GET("/` + str.ToKebabCase(moduleNotModify) + `", ` + moduleName + `Controller.Get` + caser.String(moduleName) + `)
+	router.GET("/` + str.ToKebabCase(moduleNotModify) + `/:` + str.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id", ` + moduleName + `Controller.GetOne` + caser.String(moduleName) + `)
+	router.PUT("/` + str.ToKebabCase(moduleNotModify) + `/:` + str.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id", ` + moduleName + `Controller.Update` + caser.String(moduleName) + `)
+	router.DELETE("/` + str.ToKebabCase(moduleNotModify) + `/:` + str.FormatSnakeCaseToCamelCase(moduleNotModify) + `Id", ` + moduleName + `Controller.Delete` + caser.String(moduleName) + `)
 
 ` + lines[i] + ``
 		}
@@ -118,7 +122,7 @@ func AppendToRoutingSimple(moduleName string, moduleNotModify string) {
 
 		if strings.Contains(line, "return router") {
 			lines[i] = ` //` + moduleName + `
-	router.GET("/` + str.ToKebabCase(moduleNotModify) + `", ` + moduleName + `Controller.Get` + strings.Title(moduleName) + `)
+	router.GET("/` + str.ToKebabCase(moduleNotModify) + `", ` + moduleName + `Controller.Get` + caser.String(moduleName) + `)
 
 ` + lines[i] + ``
 		}

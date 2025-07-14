@@ -94,7 +94,6 @@ func Command() {
 		// fmt.Printf("\n---\nYou chose %s!\n", m.choice)
 
 		if m.choice == "New Project" {
-
 			fmt.Printf("\n")
 			fmt.Println("Enter Project Name: ")
 			folder := input.Input()
@@ -103,7 +102,7 @@ func Command() {
 
 			fmt.Printf("\n")
 			//Project
-			bar := progressbar.Default(39)
+			bar := progressbar.Default(42)
 
 			os.MkdirAll(folderName, os.ModePerm)
 			bar.Add(1)

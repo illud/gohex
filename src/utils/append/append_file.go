@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 	"strings"
@@ -69,7 +68,7 @@ type Tracker struct {
 func AddDataToTrackerFile(moduleName string, endpointName string) error {
 	// Read JSON file
 	filePath := "tracker.json"
-	data, err := ioutil.ReadFile(filePath)
+	data, err := os.ReadFile(filePath)
 	if err != nil {
 		log.Fatalf("Error reading file: %v", err)
 	}
@@ -97,7 +96,7 @@ func AddDataToTrackerFile(moduleName string, endpointName string) error {
 	}
 
 	// Write JSON to file
-	err = ioutil.WriteFile(filePath, newDataJSON, os.ModePerm)
+	err = os.WriteFile(filePath, newDataJSON, os.ModePerm)
 	if err != nil {
 		log.Fatalf("Error writing to file: %v", err)
 	}
@@ -108,7 +107,7 @@ func AddDataToTrackerFile(moduleName string, endpointName string) error {
 func ReadTrackerFile() Tracker {
 	// Read JSON file
 	filePath := "tracker.json"
-	data, err := ioutil.ReadFile(filePath)
+	data, err := os.ReadFile(filePath)
 	if err != nil {
 		log.Fatalf("Error reading file: %v", err)
 	}

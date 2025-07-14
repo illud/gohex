@@ -40,14 +40,14 @@ func TestDashToCamelCase(t *testing.T) {
 	}
 }
 
-func TestCapitalizeFirstLetter(t *testing.T) {
-	expected := "Gohex"
-	got := CapitalizeFirstLetter("gohex")
+// func TestCapitalizeFirstLetter(t *testing.T) {
+// 	expected := "Gohex"
+// 	got := CapitalizeFirstLetter("gohex")
 
-	if got != expected {
-		t.Errorf("Expected: %v, got: %v", expected, got)
-	}
-}
+// 	if got != expected {
+// 		t.Errorf("Expected: %v, got: %v", expected, got)
+// 	}
+// }
 
 func TestFormatHyphenToCamelCase(t *testing.T) {
 	expected := "goHex"

@@ -25,25 +25,25 @@ func PostMethod(moduleName string, methodName string) {
 	//Add data to controller.go
 	controllerString :=
 		`
-// Post ` + strings.Title(moduleName) + `
-// @Summary Post ` + strings.Title(moduleName) + `
+// Post ` + caser.String(moduleName) + `
+// @Summary Post ` + caser.String(moduleName) + `
 // @Schemes
-// @Description Post ` + strings.Title(moduleName) + `
-// @Tags ` + strings.Title(moduleName) + `
+// @Description Post ` + caser.String(moduleName) + `
+// @Tags ` + caser.String(moduleName) + `
 // @Security BearerAuth
 // @Accept json
 // @Produce json
-// @Param Body body ` + moduleName + `Model.` + strings.Title(moduleName) + ` true "Body to create ` + strings.Title(moduleName) + `"
+// @Param Body body ` + moduleName + `Model.` + caser.String(moduleName) + ` true "Body to create ` + caser.String(moduleName) + `"
 // @Success 200
 // @Router /` + endpointName + `/` + strings.ToLower(methodName) + ` [Post]
-func ` + strings.Title(str.DashToCamel(methodName)) + `(c *gin.Context) {
-	var ` + moduleName + ` ` + moduleName + `Model.` + strings.Title(moduleName) + `
+func ` + str.DashToCamel(methodName) + `(c *gin.Context) {
+	var ` + moduleName + ` ` + moduleName + `Model.` + caser.String(moduleName) + `
 	if err := c.ShouldBindJSON(&` + moduleName + `); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	err := service.` + strings.Title(str.DashToCamel(methodName)) + `(` + moduleName + `)
+	err := service.` + str.DashToCamel(methodName) + `(` + moduleName + `)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -64,8 +64,8 @@ func ` + strings.Title(str.DashToCamel(methodName)) + `(c *gin.Context) {
 	// 	//Add data to service.go
 	servicesString :=
 		`
-func (s *Service) ` + strings.Title(str.DashToCamel(methodName)) + `(` + moduleName + ` ` + moduleName + `Model.` + strings.Title(moduleName) + `) error {
-	err := s.` + moduleName + `Repository.` + strings.Title(str.DashToCamel(methodName)) + `(` + moduleName + `)
+func (s *Service) ` + str.DashToCamel(methodName) + `(` + moduleName + ` ` + moduleName + `Model.` + caser.String(moduleName) + `) error {
+	err := s.` + moduleName + `Repository.` + str.DashToCamel(methodName) + `(` + moduleName + `)
 	if err != nil {
 		return err
 	}
@@ -80,7 +80,7 @@ func (s *Service) ` + strings.Title(str.DashToCamel(methodName)) + `(` + moduleN
 
 	// 	//Add data to module/infraestructure/module.db.go
 	repositoryInterfaceString :=
-		`	` + strings.Title(str.DashToCamel(methodName)) + `(` + moduleName + ` ` + moduleName + `Model.` + strings.Title(moduleName) + `)  error
+		`	` + str.DashToCamel(methodName) + `(` + moduleName + ` ` + moduleName + `Model.` + caser.String(moduleName) + `)  error
 }`
 
 	repositoryResult, err := find.FindFile("app/" + moduleName + "/domain/repositories/")
@@ -95,7 +95,7 @@ func (s *Service) ` + strings.Title(str.DashToCamel(methodName)) + `(` + moduleN
 	// 	//Add data to module/infraestructure/module.db.go
 	infraestructureString :=
 		`
-func (` + str.GetFirstCharacterOfString(moduleName) + ` ` + strings.Title(moduleName) + `Db) ` + strings.Title(str.DashToCamel(methodName)) + `(` + moduleName + ` ` + moduleName + `Model.` + strings.Title(moduleName) + `) error {
+func (` + str.GetFirstCharacterOfString(moduleName) + ` ` + caser.String(moduleName) + `Db) ` + str.DashToCamel(methodName) + `(` + moduleName + ` ` + moduleName + `Model.` + caser.String(moduleName) + `) error {
 	// Implement your creation logic here
 	return  nil
 }
@@ -117,7 +117,7 @@ func (` + str.GetFirstCharacterOfString(moduleName) + ` ` + strings.Title(module
 	for i, line := range lines {
 		if strings.Contains(line, "//"+moduleName) {
 			lines[i] = `	//` + moduleName + ` 
-	router.POST("/` + endpointName + `/` + strings.ToLower(methodName) + `", ` + moduleName + `Controller.` + strings.Title(str.DashToCamel(methodName)) + `)`
+	router.POST("/` + endpointName + `/` + strings.ToLower(methodName) + `", ` + moduleName + `Controller.` + str.DashToCamel(methodName) + `)`
 		}
 
 	}
