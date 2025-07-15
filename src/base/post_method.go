@@ -15,19 +15,19 @@ import (
 )
 
 func AppendTemplateToFile(templatePath string, outputPath string, data interface{}) error {
-	// ✅ 1. Lee el contenido directamente desde el FS embebido
+	// Read the template content from the embedded filesystem
 	tmplContent, err := TmplFS.ReadFile(templatePath)
 	if err != nil {
 		return fmt.Errorf("error reading embedded template %s: %w", templatePath, err)
 	}
 
-	// ✅ 2. Parsea el contenido
+	// Parse the template content
 	tmpl, err := template.New("tmpl").Parse(string(tmplContent))
 	if err != nil {
 		return fmt.Errorf("error parsing template content %s: %w", templatePath, err)
 	}
 
-	// ✅ 3. Ejecuta la plantilla
+	// Execute the template with the provided data
 	var rendered bytes.Buffer
 	if err := tmpl.Execute(&rendered, data); err != nil {
 		return fmt.Errorf("error rendering template %s: %w", templatePath, err)
@@ -48,7 +48,7 @@ func ReplaceLastCharacterWithTemplate(filePath, templatePath, oldChar string, da
 		return fmt.Errorf("'%s' not found in the file", oldChar)
 	}
 
-	// Lee y parsea desde el embed
+	// Read and parse the template from the embedded filesystem
 	tmplContent, err := TmplFS.ReadFile(templatePath)
 	if err != nil {
 		return fmt.Errorf("error reading embedded template %s: %w", templatePath, err)
