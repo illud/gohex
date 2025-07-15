@@ -1,0 +1,6 @@
+func ({{.FirstChar}} *{{.StructName}}Db) {{.MethodFuncName}}() ([]{{.ModuleName}}Model.{{.StructName}}, error) {
+	// Implement your retrieval logic here
+	var {{.ModuleName}} []{{.ModuleName}}Model.{{.StructName}}
+	{{.ModuleName}} = append({{.ModuleName}}, {{.ModuleName}}Model.{{.StructName}}{Id: 1})
+	return {{.ModuleName}}, nil
+}

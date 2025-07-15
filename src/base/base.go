@@ -2,17 +2,13 @@ package base
 
 import (
 	"bytes"
-	"embed"
 	"html/template"
 	"os"
 )
 
-//go:embed templates/**/*.tmpl
-var tmplFS embed.FS
-
 func writeTemplateToFile(embedPath, outputPath string, data any) {
 	// Read the template content from the embedded filesystem
-	tmplContent, err := tmplFS.ReadFile(embedPath)
+	tmplContent, err := TmplFS.ReadFile(embedPath)
 	if err != nil {
 		panic("error reading embedded template: " + err.Error())
 	}

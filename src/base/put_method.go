@@ -5,11 +5,20 @@ import (
 	"os"
 	"strings"
 
-	append "github.com/illud/gohex/src/utils/append"
 	utils "github.com/illud/gohex/src/utils/append"
 	find "github.com/illud/gohex/src/utils/find"
 	str "github.com/illud/gohex/src/utils/strings"
 )
+
+type PutMethodData struct {
+	ModuleName      string
+	StructName      string
+	MethodNameLower string
+	MethodFuncName  string
+	EndpointName    string
+	FirstChar       string
+	EndpointCamelId string
+}
 
 func PutMethod(moduleName string, methodName string) {
 	trackerResult := utils.ReadTrackerFile()
@@ -22,113 +31,85 @@ func PutMethod(moduleName string, methodName string) {
 		}
 	}
 
-	//Add data to controller.go
-	controllerString :=
-		`
-// Put ` + caser.String(moduleName) + `
-// @Summary Put ` + caser.String(moduleName) + `
-// @Schemes
-// @Description Put ` + caser.String(moduleName) + `
-// @Tags ` + caser.String(moduleName) + `
-// @Security BearerAuth
-// @Param ` + str.FormatHyphenToCamelCase(endpointName) + `Id path int true "` + str.FormatHyphenToCamelCase(endpointName) + `Id"
-// @Accept json
-// @Produce json
-// @Param Body body ` + moduleName + `Model.` + caser.String(moduleName) + ` true "Body to update ` + caser.String(moduleName) + `"
-// @Success 200
-// @Router /` + endpointName + `/` + strings.ToLower(methodName) + `/{` + str.FormatHyphenToCamelCase(endpointName) + `Id} [Put]
-func ` + str.DashToCamel(methodName) + `(c *gin.Context) {
-	var ` + moduleName + ` ` + moduleName + `Model.` + caser.String(moduleName) + `
-	if err := c.ShouldBindJSON(&` + moduleName + `); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
+	data := PutMethodData{
+		ModuleName:      moduleName,
+		StructName:      caser.String(moduleName),
+		MethodNameLower: strings.ToLower(methodName),
+		MethodFuncName:  str.DashToCamel(methodName),
+		EndpointName:    endpointName,
+		FirstChar:       str.GetFirstCharacterOfString(moduleName),
+		EndpointCamelId: str.FormatHyphenToCamelCase(endpointName) + "Id",
 	}
 
-	` + str.FormatHyphenToCamelCase(endpointName) + `Id, err := strconv.Atoi(c.Param("` + str.FormatHyphenToCamelCase(endpointName) + `Id"))
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	err = service.` + str.DashToCamel(methodName) + `(` + str.FormatHyphenToCamelCase(endpointName) + `Id)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	c.JSON(http.StatusOK, gin.H{
-		"data": "` + moduleName + ` updated",
-	})
-}
-`
+	// Controller
 	controllerResult, err := find.FindFile("app/" + moduleName + "/aplication/")
 	if err != nil {
 		log.Fatal(err)
 	}
-	// Write the data to the end of the file
-	append.AppendDataToFile("app/"+moduleName+"/aplication/"+*controllerResult, controllerString)
-
-	// 	//Add data to service.go
-	servicesString :=
-		`
-func (s *Service) ` + str.DashToCamel(methodName) + `(` + str.FormatHyphenToCamelCase(endpointName) + `Id int) error {
-	err := s.` + moduleName + `Repository.` + str.DashToCamel(methodName) + `(` + str.FormatHyphenToCamelCase(endpointName) + `Id)
+	err = AppendTemplateToFile(
+		"templates/endpoint/controller.put.go.tmpl",
+		"app/"+moduleName+"/aplication/"+*controllerResult,
+		data,
+	)
 	if err != nil {
-		return err
+		log.Fatal(err)
 	}
-	return nil
-}
-`
+
+	// Service
 	serviceResult, err := find.FindFile("app/" + moduleName + "/domain/services/")
 	if err != nil {
 		log.Fatal(err)
 	}
-	append.AppendDataToFile("app/"+moduleName+"/domain/services/"+*serviceResult, servicesString)
+	err = AppendTemplateToFile(
+		"templates/endpoint/service.put.go.tmpl",
+		"app/"+moduleName+"/domain/services/"+*serviceResult,
+		data,
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	// 	//Add data to module/infraestructure/module.db.go
-	repositoryInterfaceString :=
-		`	` + str.DashToCamel(methodName) + `(` + str.FormatHyphenToCamelCase(endpointName) + `Id int) error
-}`
-
+	// Repository
 	repositoryResult, err := find.FindFile("app/" + moduleName + "/domain/repositories/")
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = append.ReplaceLastCharacter("app/"+moduleName+"/domain/repositories/"+*repositoryResult, "}", repositoryInterfaceString)
+	err = ReplaceLastCharacterWithTemplate(
+		"app/"+moduleName+"/domain/repositories/"+*repositoryResult,
+		"templates/endpoint/repository.put.go.tmpl",
+		"}",
+		data,
+	)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	// 	//Add data to module/infraestructure/module.db.go
-	infraestructureString :=
-		`
-func (` + str.GetFirstCharacterOfString(moduleName) + ` *` + caser.String(moduleName) + `Db) ` + str.DashToCamel(methodName) + `(` + str.FormatHyphenToCamelCase(endpointName) + `Id int) error {
-	// Implement your update logic here
-	return nil
-}
-`
-	infraestructureResult, err := find.FindFile("app/" + moduleName + "/infraestructure/")
+	// Infra
+	infraResult, err := find.FindFile("app/" + moduleName + "/infraestructure/")
 	if err != nil {
 		log.Fatal(err)
 	}
-	append.AppendDataToFile("app/"+moduleName+"/infraestructure/"+*infraestructureResult, infraestructureString)
+	err = AppendTemplateToFile(
+		"templates/endpoint/infraestructure.put.go.tmpl",
+		"app/"+moduleName+"/infraestructure/"+*infraResult,
+		data,
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	// Add endpoint to router.go
+	// Router
 	input, err := os.ReadFile("router/router.go")
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	lines := strings.Split(string(input), "\n")
-
 	for i, line := range lines {
 		if strings.Contains(line, "//"+moduleName) {
-			lines[i] = `	//` + moduleName + ` 
-	router.PUT("/` + endpointName + `/` + strings.ToLower(methodName) + `/:` + str.FormatHyphenToCamelCase(endpointName) + `Id", ` + moduleName + `Controller.` + str.DashToCamel(methodName) + `)`
+			lines[i] = "\t//" + moduleName + "\n\trouter.PUT(\"/" + data.EndpointName + "/" + data.MethodNameLower + "/:" + data.EndpointCamelId + "\", " + moduleName + "Controller." + data.MethodFuncName + ")"
 		}
-
 	}
-
 	output := strings.Join(lines, "\n")
 	err = os.WriteFile("router/router.go", []byte(output), 0644)
 	if err != nil {

@@ -1,6 +1,9 @@
 package base
 
 import (
+	"bytes"
+	"fmt"
+	"html/template"
 	"log"
 	"os"
 	"strings"
@@ -10,6 +13,69 @@ import (
 	find "github.com/illud/gohex/src/utils/find"
 	str "github.com/illud/gohex/src/utils/strings"
 )
+
+func AppendTemplateToFile(templatePath string, outputPath string, data interface{}) error {
+	// ✅ 1. Lee el contenido directamente desde el FS embebido
+	tmplContent, err := TmplFS.ReadFile(templatePath)
+	if err != nil {
+		return fmt.Errorf("error reading embedded template %s: %w", templatePath, err)
+	}
+
+	// ✅ 2. Parsea el contenido
+	tmpl, err := template.New("tmpl").Parse(string(tmplContent))
+	if err != nil {
+		return fmt.Errorf("error parsing template content %s: %w", templatePath, err)
+	}
+
+	// ✅ 3. Ejecuta la plantilla
+	var rendered bytes.Buffer
+	if err := tmpl.Execute(&rendered, data); err != nil {
+		return fmt.Errorf("error rendering template %s: %w", templatePath, err)
+	}
+
+	return append.AppendDataToFile(outputPath, rendered.String())
+}
+
+func ReplaceLastCharacterWithTemplate(filePath, templatePath, oldChar string, data interface{}) error {
+	content, err := os.ReadFile(filePath)
+	if err != nil {
+		return err
+	}
+	contentStr := string(content)
+
+	lastIndex := strings.LastIndex(contentStr, oldChar)
+	if lastIndex == -1 {
+		return fmt.Errorf("'%s' not found in the file", oldChar)
+	}
+
+	// Lee y parsea desde el embed
+	tmplContent, err := TmplFS.ReadFile(templatePath)
+	if err != nil {
+		return fmt.Errorf("error reading embedded template %s: %w", templatePath, err)
+	}
+	tmpl, err := template.New("tmpl").Parse(string(tmplContent))
+	if err != nil {
+		return fmt.Errorf("error parsing template content %s: %w", templatePath, err)
+	}
+
+	var rendered bytes.Buffer
+	if err := tmpl.Execute(&rendered, data); err != nil {
+		return fmt.Errorf("error rendering template %s: %w", templatePath, err)
+	}
+
+	newContent := contentStr[:lastIndex] + rendered.String() + contentStr[lastIndex+1:]
+
+	return os.WriteFile(filePath, []byte(newContent), 0644)
+}
+
+type PostMethodData struct {
+	ModuleName      string
+	StructName      string
+	MethodNameLower string
+	MethodFuncName  string
+	EndpointName    string
+	FirstChar       string
+}
 
 func PostMethod(moduleName string, methodName string) {
 	trackerResult := utils.ReadTrackerFile()
@@ -22,106 +88,85 @@ func PostMethod(moduleName string, methodName string) {
 		}
 	}
 
-	//Add data to controller.go
-	controllerString :=
-		`
-// Post ` + caser.String(moduleName) + `
-// @Summary Post ` + caser.String(moduleName) + `
-// @Schemes
-// @Description Post ` + caser.String(moduleName) + `
-// @Tags ` + caser.String(moduleName) + `
-// @Security BearerAuth
-// @Accept json
-// @Produce json
-// @Param Body body ` + moduleName + `Model.` + caser.String(moduleName) + ` true "Body to create ` + caser.String(moduleName) + `"
-// @Success 200
-// @Router /` + endpointName + `/` + strings.ToLower(methodName) + ` [Post]
-func ` + str.DashToCamel(methodName) + `(c *gin.Context) {
-	var ` + moduleName + ` ` + moduleName + `Model.` + caser.String(moduleName) + `
-	if err := c.ShouldBindJSON(&` + moduleName + `); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
+	data := PostMethodData{
+		ModuleName:      moduleName,
+		StructName:      caser.String(moduleName),
+		MethodNameLower: strings.ToLower(methodName),
+		MethodFuncName:  str.DashToCamel(methodName),
+		EndpointName:    endpointName,
+		FirstChar:       str.GetFirstCharacterOfString(moduleName),
 	}
 
-	err := service.` + str.DashToCamel(methodName) + `(` + moduleName + `)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	c.JSON(http.StatusOK, gin.H{
-		"data": "` + moduleName + ` created",
-	})
-}
-`
+	// Controller
 	controllerResult, err := find.FindFile("app/" + moduleName + "/aplication/")
 	if err != nil {
 		log.Fatal(err)
 	}
-	// Write the data to the end of the file
-	append.AppendDataToFile("app/"+moduleName+"/aplication/"+*controllerResult, controllerString)
-
-	// 	//Add data to service.go
-	servicesString :=
-		`
-func (s *Service) ` + str.DashToCamel(methodName) + `(` + moduleName + ` ` + moduleName + `Model.` + caser.String(moduleName) + `) error {
-	err := s.` + moduleName + `Repository.` + str.DashToCamel(methodName) + `(` + moduleName + `)
+	err = AppendTemplateToFile(
+		"templates/endpoint/controller.post.go.tmpl",
+		"app/"+moduleName+"/aplication/"+*controllerResult,
+		data,
+	)
 	if err != nil {
-		return err
+		log.Fatal(err)
 	}
-	return nil
-}
-`
+
+	// Service
 	serviceResult, err := find.FindFile("app/" + moduleName + "/domain/services/")
 	if err != nil {
 		log.Fatal(err)
 	}
-	append.AppendDataToFile("app/"+moduleName+"/domain/services/"+*serviceResult, servicesString)
+	err = AppendTemplateToFile(
+		"templates/endpoint/service.post.go.tmpl",
+		"app/"+moduleName+"/domain/services/"+*serviceResult,
+		data,
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	// 	//Add data to module/infraestructure/module.db.go
-	repositoryInterfaceString :=
-		`	` + str.DashToCamel(methodName) + `(` + moduleName + ` ` + moduleName + `Model.` + caser.String(moduleName) + `)  error
-}`
-
+	// Repository Interface (reemplazar la llave final)
 	repositoryResult, err := find.FindFile("app/" + moduleName + "/domain/repositories/")
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = append.ReplaceLastCharacter("app/"+moduleName+"/domain/repositories/"+*repositoryResult, "}", repositoryInterfaceString)
+	err = ReplaceLastCharacterWithTemplate(
+		"app/"+moduleName+"/domain/repositories/"+*repositoryResult,
+		"templates/endpoint/repository.post.go.tmpl",
+		"}",
+		data,
+	)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	// 	//Add data to module/infraestructure/module.db.go
-	infraestructureString :=
-		`
-func (` + str.GetFirstCharacterOfString(moduleName) + ` ` + caser.String(moduleName) + `Db) ` + str.DashToCamel(methodName) + `(` + moduleName + ` ` + moduleName + `Model.` + caser.String(moduleName) + `) error {
-	// Implement your creation logic here
-	return  nil
-}
-`
-	infraestructureResult, err := find.FindFile("app/" + moduleName + "/infraestructure/")
+	// Infraestructure
+	infraResult, err := find.FindFile("app/" + moduleName + "/infraestructure/")
 	if err != nil {
 		log.Fatal(err)
 	}
-	append.AppendDataToFile("app/"+moduleName+"/infraestructure/"+*infraestructureResult, infraestructureString)
+	err = AppendTemplateToFile(
+		"templates/endpoint/infraestructure.post.go.tmpl",
+		"app/"+moduleName+"/infraestructure/"+*infraResult,
+		data,
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	// Add endpoint to router.go
+	// Router
 	input, err := os.ReadFile("router/router.go")
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	lines := strings.Split(string(input), "\n")
-
 	for i, line := range lines {
 		if strings.Contains(line, "//"+moduleName) {
-			lines[i] = `	//` + moduleName + ` 
-	router.POST("/` + endpointName + `/` + strings.ToLower(methodName) + `", ` + moduleName + `Controller.` + str.DashToCamel(methodName) + `)`
+			lines[i] = "\t//" + moduleName + "\n\trouter.POST(\"/" + data.EndpointName + "/" + data.MethodNameLower + "\", " + moduleName + "Controller." + data.MethodFuncName + ")"
+
 		}
-
 	}
-
 	output := strings.Join(lines, "\n")
 	err = os.WriteFile("router/router.go", []byte(output), 0644)
 	if err != nil {

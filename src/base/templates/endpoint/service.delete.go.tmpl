@@ -1,0 +1,7 @@
+func (s *Service) {{.MethodFuncName}}({{.ParamId}} int) error {
+	err := s.{{.ModuleName}}Repository.{{.MethodFuncName}}({{.ParamId}})
+	if err != nil {
+		return err
+	}
+	return nil
+}

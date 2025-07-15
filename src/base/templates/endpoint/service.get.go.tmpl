@@ -1,0 +1,7 @@
+func (s *Service) {{.MethodFuncName}}() ([]{{.ModuleName}}Model.{{.StructName}}, error) {
+	result, err := s.{{.ModuleName}}Repository.{{.MethodFuncName}}()
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
+}

@@ -1,0 +1,35 @@
+// Put {{.StructName}}
+// @Summary Put {{.StructName}}
+// @Schemes
+// @Description Put {{.StructName}}
+// @Tags {{.StructName}}
+// @Security BearerAuth
+// @Param {{.EndpointCamelId}} path int true "{{.EndpointCamelId}}"
+// @Accept json
+// @Produce json
+// @Param Body body {{.ModuleName}}Model.{{.StructName}} true "Body to update {{.StructName}}"
+// @Success 200
+// @Router /{{.EndpointName}}/{{.MethodNameLower}}/{ {{.EndpointCamelId}} } [Put]
+func {{.MethodFuncName}}(c *gin.Context) {
+	var {{.ModuleName}} {{.ModuleName}}Model.{{.StructName}}
+	if err := c.ShouldBindJSON(&{{.ModuleName}}); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	{{.EndpointCamelId}}, err := strconv.Atoi(c.Param("{{.EndpointCamelId}}"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	err = service.{{.MethodFuncName}}({{.EndpointCamelId}}, {{.ModuleName}})
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"data": "{{.ModuleName}} updated",
+	})
+}
