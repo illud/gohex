@@ -8,8 +8,7 @@
 // @Accept json
 // @Produce json
 // @Success 200
-// @Router /{{.EndpointName}}/{{.MethodNameLower}}/{{
-  .ParamId}} [Delete]
+// @Router /{{.EndpointName}}/{{.MethodNameLower}}/{{.ParamId}} [Delete]
 func {{.MethodFuncName}}(c *gin.Context) {
 	{{.ParamId}}, err := strconv.Atoi(c.Param("{{.ParamId}}"))
 	if err != nil {

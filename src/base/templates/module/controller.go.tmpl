@@ -12,6 +12,17 @@ import (
 var {{.ModuleName}}Db = {{.ModuleName}}Database.New{{.ModuleNameTitle}}Db()
 var service = {{.ModuleName}}Services.NewService({{.ModuleName}}Db)
 
+// Post {{.StructName}}
+// @Summary Post {{.StructName}}
+// @Schemes
+// @Description Post {{.StructName}}
+// @Tags {{.StructName}}
+// @Security BearerAuth
+// @Accept json
+// @Produce json
+// @Param Body body {{.ModuleName}}Model.{{.StructName}} true "Body to create {{.StructName}}"
+// @Success 200
+// @Router /{{.EndpointName}}/{{.MethodNameLower}} [Post]
 func Create{{.ModuleNameTitle}}(c *gin.Context) {
 	var {{.ModuleName}} {{.ModuleName}}Model.{{.ModuleNameTitle}}
 	if err := c.ShouldBindJSON(&{{.ModuleName}}); err != nil {
@@ -26,6 +37,16 @@ func Create{{.ModuleNameTitle}}(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": "{{.ModuleName}} created"})
 }
 
+// Get {{.StructName}}
+// @Summary Get {{.StructName}}
+// @Schemes
+// @Description Get {{.StructName}}
+// @Tags {{.StructName}}
+// @Security BearerAuth
+// @Accept json
+// @Produce json
+// @Success 200
+// @Router /{{.EndpointName}}/{{.MethodNameLower}} [Get]
 func Get{{.ModuleNameTitle}}(c *gin.Context) {
 	result, err := service.Get{{.ModuleNameTitle}}()
 	if err != nil {
@@ -35,6 +56,17 @@ func Get{{.ModuleNameTitle}}(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": result})
 }
 
+// GetOne {{.StructName}}
+// @Summary GetOne {{.StructName}}
+// @Schemes
+// @Description GetOne {{.StructName}}
+// @Tags {{.StructName}}
+// @Security BearerAuth
+// @Param {{.ParamId}} path int true "{{.ParamId}}"
+// @Accept json
+// @Produce json
+// @Success 200
+// @Router /{{.EndpointName}}/{{.MethodNameLower}}/{{.ParamId}} [Get]
 func GetOne{{.ModuleNameTitle}}(c *gin.Context) {
 	{{.ModuleCamel}}Id, err := strconv.Atoi(c.Param("{{.ModuleCamel}}Id"))
 	if err != nil {
@@ -49,6 +81,18 @@ func GetOne{{.ModuleNameTitle}}(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": result})
 }
 
+// Update {{.StructName}}
+// @Summary Update {{.StructName}}
+// @Schemes
+// @Description Update {{.StructName}}
+// @Tags {{.StructName}}
+// @Security BearerAuth
+// @Param {{.ParamId}} path int true "{{.ParamId}}"
+// @Param Body body {{.ModuleName}}Model.{{.StructName}} true "Body to update {{.StructName}}"
+// @Accept json
+// @Produce json
+// @Success 200
+// @Router /{{.EndpointName}}/{{.MethodNameLower}}/{{.ParamId}} [Put]
 func Update{{.ModuleNameTitle}}(c *gin.Context) {
 	var {{.ModuleName}} {{.ModuleName}}Model.{{.ModuleNameTitle}}
 	if err := c.ShouldBindJSON(&{{.ModuleName}}); err != nil {
@@ -68,6 +112,17 @@ func Update{{.ModuleNameTitle}}(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": "{{.ModuleName}} updated"})
 }
 
+// Delete {{.StructName}}
+// @Summary Delete {{.StructName}}
+// @Schemes
+// @Description Delete {{.StructName}}
+// @Tags {{.StructName}}
+// @Security BearerAuth
+// @Param {{.ParamId}} path int true "{{.ParamId}}"
+// @Accept json
+// @Produce json
+// @Success 200
+// @Router /{{.EndpointName}}/{{.MethodNameLower}}/{{.ParamId}} [Delete]
 func Delete{{.ModuleNameTitle}}(c *gin.Context) {
 	{{.ModuleCamel}}Id, err := strconv.Atoi(c.Param("{{.ModuleCamel}}Id"))
 	if err != nil {
