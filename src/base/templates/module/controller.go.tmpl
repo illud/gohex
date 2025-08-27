@@ -22,7 +22,7 @@ var service = {{.ModuleName}}Services.NewService({{.ModuleName}}Db)
 // @Produce json
 // @Param Body body {{.ModuleName}}Model.{{.StructName}} true "Body to create {{.StructName}}"
 // @Success 200
-// @Router /{{.EndpointName}}/{{.MethodNameLower}} [Post]
+// @Router /{{.EndpointName}} [Post]
 func Create{{.ModuleNameTitle}}(c *gin.Context) {
 	var {{.ModuleName}} {{.ModuleName}}Model.{{.ModuleNameTitle}}
 	if err := c.ShouldBindJSON(&{{.ModuleName}}); err != nil {
@@ -46,7 +46,7 @@ func Create{{.ModuleNameTitle}}(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Success 200
-// @Router /{{.EndpointName}}/{{.MethodNameLower}} [Get]
+// @Router /{{.EndpointName}} [Get]
 func Get{{.ModuleNameTitle}}(c *gin.Context) {
 	result, err := service.Get{{.ModuleNameTitle}}()
 	if err != nil {
@@ -66,7 +66,7 @@ func Get{{.ModuleNameTitle}}(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Success 200
-// @Router /{{.EndpointName}}/{{.MethodNameLower}}/{{.ParamId}} [Get]
+// @Router /{{.EndpointName}}/{{.ParamId}} [Get]
 func GetOne{{.ModuleNameTitle}}(c *gin.Context) {
 	{{.ModuleCamel}}Id, err := strconv.Atoi(c.Param("{{.ModuleCamel}}Id"))
 	if err != nil {
@@ -92,7 +92,7 @@ func GetOne{{.ModuleNameTitle}}(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Success 200
-// @Router /{{.EndpointName}}/{{.MethodNameLower}}/{{.ParamId}} [Put]
+// @Router /{{.EndpointName}}/{{.ParamId}} [Put]
 func Update{{.ModuleNameTitle}}(c *gin.Context) {
 	var {{.ModuleName}} {{.ModuleName}}Model.{{.ModuleNameTitle}}
 	if err := c.ShouldBindJSON(&{{.ModuleName}}); err != nil {
@@ -122,7 +122,7 @@ func Update{{.ModuleNameTitle}}(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Success 200
-// @Router /{{.EndpointName}}/{{.MethodNameLower}}/{{.ParamId}} [Delete]
+// @Router /{{.EndpointName}}/{{.ParamId}} [Delete]
 func Delete{{.ModuleNameTitle}}(c *gin.Context) {
 	{{.ModuleCamel}}Id, err := strconv.Atoi(c.Param("{{.ModuleCamel}}Id"))
 	if err != nil {

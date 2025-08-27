@@ -34,15 +34,23 @@ func BaseModuleCrud(moduleName string, moduleNameSnakeCase string, moduleNotModi
 			ModuleName      string
 			ModuleNameTitle string
 			ModuleCamel     string
+			StructName      string
+			EndpointName    string
+			MethodNameLower string
+			ParamId         string
 		}{
 			CurrentDirName:  currentDirName,
 			ModuleName:      moduleName,
 			ModuleNameTitle: caser.String(moduleName),
 			ModuleCamel:     str.FormatSnakeCaseToCamelCase(moduleName),
+			StructName:      caser.String(moduleName),
+			EndpointName:    str.ToKebabCase(moduleNameSnakeCase),
+			MethodNameLower: strings.ToLower(moduleName),
+			ParamId:         str.FormatHyphenToCamelCase(moduleName) + "Id",
 		},
 	)
 
-	//Add data to moduleName.modle.go
+	//Add data to model.go.tmpl
 	writeTemplateToFile(
 		"templates/module/model.go.tmpl",
 		"app/"+moduleName+"/domain/models/"+moduleNameSnakeCase+".model.go",
